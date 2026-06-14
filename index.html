@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TiticacaTrout – Proveedor B2B de Trucha del Lago Titicaca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a2e; background: #fff; line-height: 1.6; }
+
+    :root {
+      --blue-dark:  #042C53;
+      --blue-mid:   #0C447C;
+      --blue-light: #185FA5;
+      --blue-pale:  #E6F1FB;
+      --blue-muted: #B5D4F4;
+      --text-muted: #5f6e80;
+      --border:     rgba(0,0,0,0.09);
+      --bg-section: #f7fafd;
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  16px;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.97);
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 42px; height: 42px; border-radius: var(--radius-sm);
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .logo-icon img { width: 42px; height: 42px; object-fit: contain; }
+    .logo-text { font-size: 16px; font-weight: 600; color: var(--blue-dark); }
+    .logo-sub  { font-size: 10px; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 1.4rem; align-items: center; }
+    .nav-links a {
+      font-size: 13px; color: var(--text-muted);
+      text-decoration: none; cursor: pointer; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--blue-dark); }
+
+    /* Botón proveedor en nav — destacado al inicio */
+    .nav-prov-btn {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 600;
+      color: var(--blue-dark) !important;
+      border: 1.5px solid var(--blue-mid);
+      padding: 7px 16px; border-radius: var(--radius-sm);
+      background: var(--blue-pale); cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+      order: -1;
+    }
+    .nav-prov-btn:hover { background: #d0e6f9; border-color: var(--blue-dark); box-shadow: 0 2px 8px rgba(4,44,83,0.13); }
+    .nav-prov-btn svg { width: 14px; height: 14px; stroke: var(--blue-mid); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .nav-cta {
+      background: var(--blue-dark) !important;
+      color: #fff !important;
+      padding: 8px 18px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600;
+    }
+    .nav-cta:hover { background: var(--blue-mid) !important; }
+
+    /* ── MODAL PROVEEDOR ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: rgba(4,44,83,0.55); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: var(--radius-lg);
+      width: 100%; max-width: 440px; margin: 1rem;
+      padding: 2.5rem; position: relative;
+      box-shadow: 0 24px 60px rgba(4,44,83,0.2);
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 20px; line-height: 1;
+      padding: 4px 8px; border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .modal-close:hover { background: var(--bg-section); }
+    .modal-logo {
+      width: 46px; height: 46px; background: var(--blue-dark);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .modal-logo svg { width: 26px; height: 26px; }
+    .modal-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 600; color: var(--blue-dark);
+      margin-bottom: 0.3rem;
+    }
+    .modal-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 1.75rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block; font-size: 11px; font-weight: 600;
+      color: var(--blue-dark); margin-bottom: 5px; letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .form-group input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px; font-family: 'Inter', sans-serif;
+      color: var(--blue-dark); background: #fafbfc;
+      transition: border-color 0.2s; outline: none;
+    }
+    .form-group input:focus { border-color: var(--blue-light); background: #fff; }
+    .modal-btn {
+      width: 100%; padding: 13px;
+      background: var(--blue-dark); color: #fff; border: none;
+      border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+      cursor: pointer; margin-top: 0.5rem; transition: background 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .modal-btn:hover { background: var(--blue-mid); }
+    .modal-error {
+      display: none; color: #a32d2d; font-size: 12px;
+      margin-top: 0.75rem; text-align: center;
+      background: #fcebeb; border-radius: 6px; padding: 8px;
+    }
+    .modal-hint {
+      margin-top: 1rem; padding: 0.75rem;
+      background: var(--bg-section); border-radius: var(--radius-sm);
+      font-size: 12px; color: var(--text-muted); line-height: 1.6;
+    }
+    .modal-hint strong { color: var(--blue-dark); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; min-height: 640px;
+      display: flex; align-items: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      /*
+        IMAGEN HERO – FONDO
+        Lago Titicaca, aguas azul profundo, cielo andino
+        Fuente: Unsplash (libre uso comercial)
+        Para reemplazar con foto propia: background-image: url('img/lago-titicaca.jpg');
+      */
+      background-image: url('titicaca-lago.png');
+      background-size: cover;
+      background-position: center 40%;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg,
+        rgba(4,44,83,0.93) 0%,
+        rgba(12,68,124,0.82) 50%,
+        rgba(4,44,83,0.35) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 600px; padding: 5rem 2.5rem 4rem;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--blue-muted);
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 20px; margin-bottom: 1.5rem;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: #5DCAA5; border-radius: 50%; flex-shrink: 0; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 50px; font-weight: 600; color: #fff;
+      line-height: 1.13; margin-bottom: 1.1rem;
+    }
+    .hero h1 em { color: #85B7EB; font-style: normal; }
+    .hero p { font-size: 16px; color: #c8ddf0; margin-bottom: 2.2rem; line-height: 1.8; max-width: 490px; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: #fff; color: var(--blue-dark);
+      padding: 13px 28px; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .btn-outline {
+      border: 1.5px solid rgba(255,255,255,0.4); color: #fff;
+      padding: 13px 28px; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 500; background: transparent;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+    .hero-stats {
+      display: flex; gap: 2.5rem; margin-top: 3.5rem; flex-wrap: wrap;
+    }
+    .hero-stat-num   { font-size: 28px; font-weight: 600; color: #fff; }
+    .hero-stat-label { font-size: 11px; color: #85B7EB; margin-top: 2px; }
+
+    /*
+      IMAGEN FLOTANTE HERO
+      Trucha arcoíris fresca en presentación gastronómica
+      Fuente: Unsplash – libre uso comercial, sin marca
+      Para reemplazar: src="img/trucha-plato.jpg"
+    */
+    .hero-float-img {
+      position: absolute; right: 4%; bottom: 0; z-index: 2;
+      width: 400px; height: 420px;
+      object-fit: cover; object-position: center;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      box-shadow: -12px 0 50px rgba(4,44,83,0.45);
+    }
+
+    /* ── BANDA IMAGEN ── */
+    /*
+      IMAGEN BANDA PANORÁMICA
+      Altiplano andino con agua – paisaje de lago de montaña
+      Fuente: Unsplash – libre uso comercial, sin marca
+      Para reemplazar: <img src="img/banda-lago.jpg" ...>
+    */
+    .img-banda {
+      width: 100%; height: 280px; object-fit: cover;
+      object-position: center 55%; display: block;
+    }
+
+    /* ── SECCIONES ── */
+    .section { padding: 5rem 2.5rem; }
+    .section-alt { background: var(--bg-section); }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--blue-light); margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px; font-weight: 500;
+      color: var(--blue-dark); margin-bottom: 0.75rem;
+    }
+    .section-sub {
+      font-size: 15px; color: var(--text-muted);
+      max-width: 560px; line-height: 1.78;
+    }
+
+    /* ── CONFIANZA ── */
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.1rem; margin-top: 2.5rem;
+    }
+    .trust-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .trust-card:hover { box-shadow: 0 6px 22px rgba(4,44,83,0.09); transform: translateY(-2px); }
+    .trust-icon {
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      background: var(--blue-pale);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+    }
+    .trust-icon svg { width: 22px; height: 22px; stroke: var(--blue-light); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .trust-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--blue-dark); }
+    .trust-card p  { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── MISIÓN VISIÓN ── */
+    .mv-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; margin-top: 2.5rem; align-items: start;
+    }
+    .mv-card { border-radius: var(--radius-md); padding: 2rem; }
+    .mv-mision { background: var(--blue-dark); }
+    .mv-vision { background: var(--blue-mid); }
+    .mv-card .tag {
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #85B7EB; margin-bottom: 0.75rem; font-weight: 600;
+    }
+    .mv-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; margin-bottom: 0.75rem; }
+    .mv-card p  { font-size: 14px; color: #B5D4F4; line-height: 1.78; }
+    .valores-row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .valor-pill {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 30px; padding: 7px 16px;
+      font-size: 12px; font-weight: 600; color: var(--blue-dark);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .valor-pill svg { width: 14px; height: 14px; stroke: var(--blue-light); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* galería misión */
+    .mv-gallery {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem; margin-top: 0;
+    }
+    .mv-gallery img {
+      width: 100%; height: 185px;
+      object-fit: cover; border-radius: var(--radius-md);
+      transition: transform 0.3s;
+    }
+    .mv-gallery img:hover { transform: scale(1.02); }
+    .mv-gallery img:first-child { grid-column: span 2; height: 230px; }
+
+    /* ── NUTRICIONAL ── */
+    .nutri-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2.5rem; align-items: start; margin-top: 2.5rem;
+    }
+    .nutri-img {
+      width: 100%; height: 360px; object-fit: cover;
+      border-radius: var(--radius-lg);
+    }
+    .nutri-visual {
+      background: var(--blue-dark); border-radius: var(--radius-md); padding: 1.75rem;
+    }
+    .nutri-title { font-size: 13px; color: #85B7EB; margin-bottom: 1.5rem; font-weight: 600; }
+    .nutri-bars { display: flex; flex-direction: column; gap: 16px; }
+    .nutri-bar-row { display: flex; flex-direction: column; gap: 6px; }
+    .nutri-bar-label { display: flex; justify-content: space-between; }
+    .nutri-bar-label span:first-child { font-size: 13px; color: #B5D4F4; }
+    .nutri-bar-label span:last-child  { font-size: 13px; font-weight: 600; color: #fff; }
+    .bar-bg   { background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; }
+    .bar-fill { height: 6px; border-radius: 4px; }
+    .nutri-facts {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem; margin-top: 1.5rem;
+    }
+    .nutri-fact {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.9rem 1rem;
+    }
+    .nutri-fact-val   { font-size: 22px; font-weight: 600; color: var(--blue-light); }
+    .nutri-fact-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .nutri-note { font-size: 12px; color: var(--text-muted); margin-top: 1rem; line-height: 1.7; }
+
+    /* ── CADENA DE FRÍO ── */
+    .cold-section { background: var(--blue-dark); padding: 5rem 2.5rem; }
+    .cold-section .section-tag  { color: #85B7EB; }
+    .cold-section .section-title{ color: #fff; }
+    .cold-section .section-sub  { color: #B5D4F4; }
+    .cold-steps {
+      display: flex; margin-top: 3rem;
+      overflow-x: auto; padding-bottom: 0.5rem; gap: 0;
+    }
+    .cold-step { flex: 1; min-width: 140px; text-align: center; position: relative; }
+    .cold-step:not(:last-child)::after {
+      content: ''; position: absolute; top: 28px; right: -14px;
+      width: 28px; height: 2px; background: rgba(181,212,244,0.3); z-index: 1;
+    }
+    .cold-step-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(133,183,235,0.35);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 0.9rem;
+    }
+    .cold-step-icon svg { width: 24px; height: 24px; stroke: #85B7EB; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .cold-step h4  { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .cold-step p   { font-size: 11px; color: #85B7EB; line-height: 1.55; padding: 0 0.5rem; }
+    .temp-badge {
+      display: inline-block; background: rgba(255,255,255,0.09);
+      color: #B5D4F4; font-size: 10px; font-weight: 600;
+      padding: 3px 10px; border-radius: 12px; margin-top: 8px;
+      border: 1px solid rgba(181,212,244,0.2);
+    }
+    /* imagen camión */
+    .cold-truck-wrap {
+      margin-top: 2.5rem; border-radius: var(--radius-lg); overflow: hidden;
+      position: relative;
+    }
+    .cold-truck-img {
+      width: 100%; height: 240px; object-fit: cover;
+      object-position: center 60%; display: block;
+      opacity: 0.82;
+    }
+    .cold-truck-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(4,44,83,0.7) 0%, transparent 60%);
+      display: flex; align-items: center; padding: 2rem;
+    }
+    .cold-truck-label h4 { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; margin-bottom: 4px; }
+    .cold-truck-label p  { font-size: 13px; color: #B5D4F4; }
+    .cold-info {
+      display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;
+    }
+    .cold-info-card {
+      flex: 1; min-width: 180px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-sm); padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .cold-info-card svg { width: 20px; height: 20px; stroke: #85B7EB; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .cold-info-card .ci-title { font-size: 13px; font-weight: 600; color: #fff; }
+    .cold-info-card .ci-sub   { font-size: 11px; color: #85B7EB; margin-top: 2px; }
+
+    /* ── RECOMENDACIONES ── */
+    .recs-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.1rem; margin-top: 2.5rem;
+    }
+    .rec-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.4rem;
+      transition: box-shadow 0.2s;
+    }
+    .rec-card:hover { box-shadow: 0 6px 20px rgba(4,44,83,0.08); }
+    .rec-header { display: flex; gap: 10px; align-items: center; margin-bottom: 0.75rem; }
+    .rec-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--blue-pale); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: var(--blue-mid);
+    }
+    .rec-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
+    .rec-role { font-size: 11px; color: var(--text-muted); }
+    .rec-stars { color: #BA7517; font-size: 14px; margin-bottom: 8px; letter-spacing: 1px; }
+    .rec-text  { font-size: 13px; color: var(--text-muted); line-height: 1.7; font-style: italic; }
+
+    /* ── REDES SOCIALES ── */
+    .social-section { padding: 3rem 2.5rem; }
+    .social-strip {
+      max-width: 1100px; margin: 0 auto;
+      border-radius: var(--radius-lg); padding: 2.5rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1.5rem;
+      /*
+        FONDO SOCIAL STRIP
+        Pescadores en lago, ambiente cálido
+        Fuente: Unsplash – libre uso comercial, sin marca
+        Para reemplazar: background-image: url('img/social-bg.jpg');
+      */
+      background-image: url('islas-uros.png');
+      background-size: cover; background-position: center;
+      background-color: var(--blue-dark);
+      background-blend-mode: multiply;
+      position: relative; overflow: hidden;
+    }
+    .social-strip::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(4,44,83,0.88) 0%, rgba(4,44,83,0.6) 100%);
+    }
+    .social-strip > * { position: relative; z-index: 1; }
+    .social-strip h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; color: #fff; margin-bottom: 4px;
+    }
+    .social-strip p  { color: #B5D4F4; font-size: 14px; }
+    .social-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .social-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .social-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .social-btn svg { width: 17px; height: 17px; }
+    .fb-btn { background: #1877F2; color: #fff; }
+    .tt-btn { background: #111; color: #fff; }
+    .wa-btn { background: #25D366; color: #fff; }
+
+    /* ── PANEL PROVEEDOR (inline, oculto hasta login) ── */
+    #prov-inline-panel {
+      display: none;
+      border-top: 3px solid var(--blue-light);
+      background: #f0f5fb; padding: 2.5rem;
+    }
+    #prov-inline-panel .panel-inner { max-width: 1000px; margin: 0 auto; }
+    #prov-inline-panel h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; color: var(--blue-dark); margin-bottom: 1rem;
+    }
+    .prov-welcome {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      margin-bottom: 1.5rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .prov-welcome-text span   { font-size: 13px; color: var(--text-muted); }
+    .prov-welcome-text strong { font-size: 16px; color: var(--blue-dark); display: block; }
+    .logout-btn {
+      background: transparent; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 6px 14px;
+      font-size: 12px; font-weight: 600; color: var(--text-muted); cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .logout-btn:hover { color: #a32d2d; border-color: #a32d2d; }
+    .panel-tabs {
+      display: flex; gap: 0.4rem; margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border); padding-bottom: 0;
+    }
+    .ptab {
+      padding: 8px 18px; font-size: 13px; font-weight: 500;
+      color: var(--text-muted); cursor: pointer; border: none;
+      background: transparent; border-bottom: 2px solid transparent;
+      margin-bottom: -1px; transition: color 0.15s; font-family: 'Inter', sans-serif;
+    }
+    .ptab.active { color: var(--blue-light); border-bottom-color: var(--blue-light); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .inv-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .inv-table th {
+      text-align: left; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted); padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .inv-table td { padding: 10px 10px; border-bottom: 1px solid var(--border); color: var(--blue-dark); }
+    .inv-table input[type=number] {
+      width: 75px; padding: 6px 8px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 13px; font-family: 'Inter', sans-serif;
+      color: var(--blue-dark); text-align: center;
+    }
+    .stock-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; }
+    .stock-ok  { background: #eaf3de; color: #3B6D11; }
+    .stock-low { background: #faeeda; color: #854F0B; }
+    .stock-out { background: #fcebeb; color: #a32d2d; }
+    .save-row-btn {
+      background: var(--blue-pale); color: var(--blue-dark);
+      border: 1px solid #B5D4F4; border-radius: 6px;
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+    .save-row-btn:hover { background: #B5D4F4; }
+    .order-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+    }
+    .order-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .order-id { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
+    .order-status-select {
+      padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border);
+      font-size: 12px; font-family: 'Inter', sans-serif; background: #fff; color: var(--blue-dark); cursor: pointer;
+    }
+    .order-detail { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+    .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+    .dash-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1.1rem;
+    }
+    .dash-num   { font-size: 26px; font-weight: 600; color: var(--blue-dark); }
+    .dash-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .mini-bar-wrap { margin-top: 1.75rem; }
+    .mini-bar-row  { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .mini-bar-name { font-size: 12px; color: var(--text-muted); width: 160px; flex-shrink: 0; }
+    .mini-bar-bg   { flex: 1; background: #e8eef5; border-radius: 4px; height: 8px; }
+    .mini-bar-fill { height: 8px; border-radius: 4px; background: var(--blue-light); }
+    .mini-bar-val  { font-size: 12px; font-weight: 600; color: var(--blue-dark); width: 40px; text-align: right; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--blue-dark); padding: 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-brand .ft-name { font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; }
+    .footer-brand .ft-sub  { font-size: 12px; color: #85B7EB; margin-top: 3px; }
+    .footer-info { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+    .footer-info span { font-size: 12px; color: #85B7EB; }
+    footer > p { font-size: 12px; color: #85B7EB; }
+
+    /* ── CHATBOT ── */
+    .chat-fab {
+      position: fixed; bottom: 1.75rem; right: 1.75rem; z-index: 500;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: var(--blue-dark); color: #fff; border: none;
+      cursor: pointer; box-shadow: 0 6px 24px rgba(4,44,83,0.35);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .chat-fab:hover { transform: scale(1.08); box-shadow: 0 10px 32px rgba(4,44,83,0.45); }
+    .chat-fab svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .chat-fab .chat-fab-close { display: none; }
+    .chat-fab.open .chat-fab-icon { display: none; }
+    .chat-fab.open .chat-fab-close { display: block; }
+
+    .chat-unread {
+      position: absolute; top: -4px; right: -4px;
+      background: #e53935; color: #fff; font-size: 11px; font-weight: 700;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff; display: none;
+    }
+    .chat-unread.show { display: flex; }
+
+    .chat-window {
+      position: fixed; bottom: 5.5rem; right: 1.75rem; z-index: 499;
+      width: 360px; max-height: 540px; background: #fff;
+      border-radius: var(--radius-lg); box-shadow: 0 16px 56px rgba(4,44,83,0.22);
+      display: flex; flex-direction: column; overflow: hidden;
+      transform: scale(0.92) translateY(12px); opacity: 0;
+      pointer-events: none; transition: transform .25s cubic-bezier(.4,0,.2,1), opacity .25s;
+      transform-origin: bottom right;
+    }
+    .chat-window.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+
+    .chat-header {
+      background: var(--blue-dark); padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .chat-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .chat-avatar svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .chat-header-info { flex: 1; }
+    .chat-header-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .chat-header-status { font-size: 11px; color: #85B7EB; display: flex; align-items: center; gap: 5px; }
+    .chat-header-status::before { content: ''; width: 6px; height: 6px; background: #5DCAA5; border-radius: 50%; }
+    .chat-header-powered { font-size: 10px; color: rgba(133,183,235,0.7); }
+
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 1rem;
+      display: flex; flex-direction: column; gap: 0.65rem;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .msg { display: flex; gap: 8px; max-width: 88%; }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .msg-avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: var(--blue-pale); display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .msg-avatar svg { width: 14px; height: 14px; stroke: var(--blue-light); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .msg-bubble {
+      padding: 0.65rem 0.9rem; border-radius: 14px;
+      font-size: 13px; line-height: 1.55;
+    }
+    .msg.bot .msg-bubble {
+      background: #f0f4f8; color: var(--blue-dark);
+      border-radius: 4px 14px 14px 14px;
+    }
+    .msg.user .msg-bubble {
+      background: var(--blue-dark); color: #fff;
+      border-radius: 14px 4px 14px 14px;
+    }
+    .msg-time { font-size: 10px; color: var(--text-muted); margin-top: 3px; display: block; }
+    .msg.user .msg-time { text-align: right; }
+
+    /* typing indicator */
+    .typing-dots { display: flex; gap: 4px; padding: 4px 2px; }
+    .typing-dots span {
+      width: 7px; height: 7px; background: var(--text-muted);
+      border-radius: 50%; animation: bounce 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* quick replies */
+    .quick-replies {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 0 1rem 0.75rem;
+    }
+    .qr-btn {
+      background: var(--blue-pale); color: var(--blue-dark);
+      border: 1px solid var(--blue-muted); border-radius: 20px;
+      padding: 5px 12px; font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: background .15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .qr-btn:hover { background: #d0e6f9; }
+
+    .chat-input-row {
+      padding: 0.75rem 1rem; border-top: 1px solid var(--border);
+      display: flex; gap: 8px; align-items: center;
+    }
+    .chat-input {
+      flex: 1; padding: 10px 14px; border: 1.5px solid var(--border);
+      border-radius: 24px; font-size: 13px; font-family: 'Inter', sans-serif;
+      color: var(--blue-dark); background: #fafbfc; outline: none;
+      transition: border-color .2s;
+    }
+    .chat-input:focus { border-color: var(--blue-light); background: #fff; }
+    .chat-send-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--blue-dark); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s; flex-shrink: 0;
+    }
+    .chat-send-btn:hover { background: var(--blue-mid); }
+    .chat-send-btn svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .chat-wa-btn {
+      display: flex; align-items: center; gap: 6px; justify-content: center;
+      background: #25D366; color: #fff; border: none; border-radius: var(--radius-sm);
+      padding: 9px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; margin: 0 1rem 0.75rem; transition: background .2s;
+      text-decoration: none;
+    }
+    .chat-wa-btn:hover { background: #1ebe5d; }
+    .chat-wa-btn svg { width: 15px; height: 15px; fill: #fff; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero h1 { font-size: 36px; }
+      .hero-float-img { display: none; }
+      .mv-layout, .nutri-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .nav { padding: 0.75rem 1.25rem; }
+      .section { padding: 3rem 1.25rem; }
+      .cold-section { padding: 3rem 1.25rem; }
+      .social-section { padding: 2rem 1.25rem; }
+      .nav-links a:not(.nav-cta):not(.nav-prov-btn) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     NAVEGACIÓN
+════════════════════════════════════ -->
+<nav class="nav">
+  <a class="logo" href="#">
+    <div class="logo-icon">
+      <img src="logo-trucha.png" alt="TiticacaTrout logo" />
+    </div>
+    <div>
+      <div class="logo-text">TiticacaTrout</div>
+      <div class="logo-sub">Proveedor B2B · Bolivia</div>
+    </div>
+  </a>
+
+  <div class="nav-links">
+    <!-- BOTÓN ACCESO PROVEEDOR — primera posición, destacado -->
+    <a href="panel.html" class="nav-prov-btn" style="text-decoration:none">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Acceso proveedor
+    </a>
+
+    <a onclick="document.getElementById('sec-confianza').scrollIntoView({behavior:'smooth'})">Nosotros</a>
+    <a onclick="document.getElementById('sec-nutri').scrollIntoView({behavior:'smooth'})">Nutrición</a>
+    <a onclick="document.getElementById('sec-logistica').scrollIntoView({behavior:'smooth'})">Logística</a>
+
+    <a href="catalogo.html" class="nav-cta">Ver catálogo</a>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════
+     MODAL LOGIN PROVEEDOR
+════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-prov" onclick="handleModalClick(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeProvModal()" aria-label="Cerrar">✕</button>
+
+    <div class="modal-logo" style="background:#fff;padding:4px;">
+      <img src="logo-trucha.png" alt="TiticacaTrout" style="width:38px;height:38px;object-fit:contain;" />
+    </div>
+
+    <h2>Acceso para proveedores</h2>
+    <p>Ingresa con tus credenciales para gestionar inventario, ver pedidos y acceder al dashboard de ventas.</p>
+
+    <div class="form-group">
+      <label for="prov-user">Usuario</label>
+      <input type="text" id="prov-user" placeholder="tu.usuario@titicacatrout.bo" autocomplete="username" />
+    </div>
+    <div class="form-group">
+      <label for="prov-pass">Contraseña</label>
+      <input type="password" id="prov-pass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter') provLogin()" />
+    </div>
+
+    <button class="modal-btn" onclick="provLogin()">Ingresar al panel</button>
+    <div class="modal-error" id="prov-error">Usuario o contraseña incorrectos. Intenta de nuevo.</div>
+
+    <div class="modal-hint">
+      <strong>Demo:</strong> admin@titicacatrout.bo / Titicaca2025<br/>
+      (En producción reemplazar por autenticación segura en servidor)
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HERO
+     Fondo: Lago Titicaca, aguas azul
+     Fuente Unsplash (libre uso comercial)
+     Reemplazar fondo: editar .hero-bg en CSS → background-image: url('img/lago.jpg')
+     Imagen flotante: trucha en presentación gastronómica
+     Reemplazar flotante: <img src="img/trucha.jpg" ...>
+════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span></span>
+      Proveedor certificado SENASAG · Lago Titicaca, Bolivia
+    </div>
+    <h1>Trucha fresca del <em>Titicaca</em> directo a tu negocio</h1>
+    <p>Proveemos trucha arcoíris de alta calidad a restaurantes, supermercados y distribuidores. Cadena de frío garantizada desde el lago hasta tu cocina.</p>
+    <div class="hero-btns">
+      <a href="catalogo.html" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Ver catálogo de productos
+      </a>
+      <button class="btn-outline" onclick="document.getElementById('sec-confianza').scrollIntoView({behavior:'smooth'})">Conocer más</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-num">3.812 m</div><div class="hero-stat-label">Altitud del lago</div></div>
+      <div><div class="hero-stat-num">+50</div><div class="hero-stat-label">Clientes activos</div></div>
+      <div><div class="hero-stat-num">−2 °C</div><div class="hero-stat-label">Temperatura de entrega</div></div>
+      <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">Rastreabilidad</div></div>
+    </div>
+  </div>
+
+  <!--
+    IMAGEN FLOTANTE HERO
+    Trucha arcoíris fresca en presentación premium
+    Fuente: Unsplash – foto de Eiliv Aceron, libre uso comercial, sin marca
+    Para reemplazar con foto propia: src="img/trucha-plato.jpg"
+  -->
+  <img
+    class="hero-float-img"
+    src="trucha-plato.png"
+    alt="Trucha arcoíris del Lago Titicaca lista para tu negocio"
+    loading="lazy"
+  />
+</section>
+
+
+<!-- ════════════════════════════════════
+     BANDA IMAGEN PANORÁMICA
+     Lago de montaña / altiplano andino
+     Fuente: Unsplash – libre uso comercial, sin marca
+     Para reemplazar: src="img/altiplano.jpg"
+════════════════════════════════════ -->
+<img
+  class="img-banda"
+  src="titicaca-lago.png"
+  alt="Panorámica del Lago Titicaca, Bolivia"
+  loading="lazy"
+/>
+
+
+<!-- ════════════════════════════════════
+     CONFIANZA
+════════════════════════════════════ -->
+<section class="section" id="sec-confianza">
+  <div class="section-inner">
+    <div class="section-tag">Por qué elegirnos</div>
+    <div class="section-title">Garantías que importan a tu negocio</div>
+    <div class="section-sub">Trabajamos con estándares de inocuidad alimentaria para que puedas ofrecer a tus clientes un producto seguro y de calidad consistente.</div>
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Certificación SENASAG</h3>
+        <p>Registro sanitario vigente. Cumplimos toda la normativa boliviana de inocuidad alimentaria.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="12 22 12 12"/><path d="M3.3 7L12 12l8.7-5"/></svg></div>
+        <h3>Trazabilidad total</h3>
+        <p>Cada lote con código de origen. Sabes exactamente de qué jaula y fecha proviene tu producto.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Entrega en 24–48 h</h3>
+        <p>Desde el lago hasta tu puerta en menos de 48 horas. Frescura garantizada en cada pedido.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <h3>Factura electrónica</h3>
+        <p>Emitimos factura con NIT en cada compra. Tu contabilidad siempre en orden.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <h3>Crianza artesanal</h3>
+        <p>Trucha criada en jaulas flotantes en el Titicaca a 3.812 m de altitud, sin antibióticos.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <h3>Soporte B2B dedicado</h3>
+        <p>Asesor comercial asignado a tu cuenta. Pedidos mínimos flexibles según tu volumen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     MISIÓN Y VISIÓN
+     Imágenes de galería:
+     1. Lago Titicaca con cielo andino claro
+     2. Jaulas flotantes de piscicultura
+     3. Montaña andina / altiplano
+     Fuente: Unsplash – libre uso comercial, sin marca
+     Para reemplazar: src="img/mision-N.jpg"
+════════════════════════════════════ -->
+<section class="section section-alt" id="sec-mision">
+  <div class="section-inner">
+    <div class="section-tag">Quiénes somos</div>
+    <div class="section-title">Misión, visión y valores</div>
+    <div class="mv-layout">
+      <div>
+        <div class="mv-card mv-mision" style="margin-bottom:1.25rem;">
+          <div class="tag">Nuestra misión</div>
+          <h3>Llevar lo mejor del Titicaca a cada mesa</h3>
+          <p>Somos productores y distribuidores de trucha arcoíris boliviana. Conectamos las aguas únicas del lago Titicaca con negocios que valoran la calidad, la frescura y un origen transparente. Trabajamos con respeto al ecosistema y apoyo a las comunidades locales.</p>
+        </div>
+        <div class="mv-card mv-vision" style="margin-bottom:1.25rem;">
+          <div class="tag">Nuestra visión</div>
+          <h3>Ser el proveedor de referencia en Bolivia</h3>
+          <p>Aspiramos a ser reconocidos como el proveedor B2B más confiable de productos hidrobiológicos en Bolivia, expandiendo nuestra red a todos los departamentos y siendo referente en piscicultura sostenible en la región andina.</p>
+        </div>
+        <div class="valores-row">
+          <div class="valor-pill"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Sostenibilidad</div>
+          <div class="valor-pill"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Transparencia</div>
+          <div class="valor-pill"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Calidad</div>
+          <div class="valor-pill"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Comunidad</div>
+        </div>
+      </div>
+      <div class="mv-gallery">
+        <img
+          src="titicaca-lago.png"
+          alt="Vista del Lago Titicaca desde las alturas de Bolivia"
+          loading="lazy"
+        />
+        <img
+          src="barca-totora.png"
+          alt="Barca de totora tradicional en el Lago Titicaca"
+          loading="lazy"
+        />
+        <img
+          src="islas-uros.png"
+          alt="Islas flotantes de los Uros, Lago Titicaca"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     VALOR NUTRICIONAL
+     Imagen: filete de pescado fresco premium
+     Fuente: Unsplash – libre uso comercial, sin marca
+     Para reemplazar: src="img/filete-trucha.jpg"
+════════════════════════════════════ -->
+<section class="section" id="sec-nutri">
+  <div class="section-inner">
+    <div class="section-tag">Beneficios del producto</div>
+    <div class="section-title">Valor nutricional de la trucha del Titicaca</div>
+    <div class="section-sub">La altitud extrema del lago genera truchas con mayor concentración de proteínas y omega-3 que las criadas a nivel del mar.</div>
+    <div class="nutri-layout">
+      <img
+        class="nutri-img"
+        src="trucha-plato.png"
+        alt="Trucha del Lago Titicaca preparada — alta calidad gastronómica"
+        loading="lazy"
+      />
+      <div>
+        <div class="nutri-visual">
+          <div class="nutri-title">Composición por 100 g de trucha arcoíris</div>
+          <div class="nutri-bars">
+            <div class="nutri-bar-row">
+              <div class="nutri-bar-label"><span>Proteína</span><span>20.5 g</span></div>
+              <div class="bar-bg"><div class="bar-fill" style="width:82%;background:#378ADD;"></div></div>
+            </div>
+            <div class="nutri-bar-row">
+              <div class="nutri-bar-label"><span>Omega-3 (DHA+EPA)</span><span>2.3 g</span></div>
+              <div class="bar-bg"><div class="bar-fill" style="width:70%;background:#5DCAA5;"></div></div>
+            </div>
+            <div class="nutri-bar-row">
+              <div class="nutri-bar-label"><span>Grasa total</span><span>5.4 g</span></div>
+              <div class="bar-bg"><div class="bar-fill" style="width:40%;background:#EF9F27;"></div></div>
+            </div>
+            <div class="nutri-bar-row">
+              <div class="nutri-bar-label"><span>Colesterol</span><span>62 mg</span></div>
+              <div class="bar-bg"><div class="bar-fill" style="width:30%;background:#F0997B;"></div></div>
+            </div>
+            <div class="nutri-bar-row">
+              <div class="nutri-bar-label"><span>Sodio</span><span>52 mg</span></div>
+              <div class="bar-bg"><div class="bar-fill" style="width:20%;background:#B5D4F4;"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="nutri-facts">
+          <div class="nutri-fact"><div class="nutri-fact-val">119</div><div class="nutri-fact-label">Calorías por 100 g</div></div>
+          <div class="nutri-fact"><div class="nutri-fact-val">20.5 g</div><div class="nutri-fact-label">Proteína completa</div></div>
+          <div class="nutri-fact"><div class="nutri-fact-val">2.3 g</div><div class="nutri-fact-label">Omega-3 DHA+EPA</div></div>
+          <div class="nutri-fact"><div class="nutri-fact-val">A, B12, D</div><div class="nutri-fact-label">Vitaminas clave</div></div>
+        </div>
+        <p class="nutri-note">Rica en selenio, fósforo y potasio. Proteína animal de alta calidad y bajo impacto calórico, ideal para menús saludables y dietas equilibradas. Fuente certificada de omega-3 de origen andino.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CADENA DE FRÍO
+     Imagen: camión frigorífico en ruta
+     Fuente: Unsplash – libre uso comercial, sin marca
+     Para reemplazar: src="img/camion-frigorifico.jpg"
+════════════════════════════════════ -->
+<section class="cold-section" id="sec-logistica">
+  <div class="section-inner">
+    <div class="section-tag">Logística y distribución</div>
+    <div class="section-title">Tu pedido viaja en frío de principio a fin</div>
+    <div class="section-sub">Camiones frigoríficos con monitoreo GPS y sensor de temperatura en tiempo real. Entregas trazadas y documentadas en cada etapa.</div>
+    <div class="cold-steps">
+      <div class="cold-step">
+        <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.09-.34.13-.52.13-.18 0-.36-.04-.53-.13l-7.9-4.44A1 1 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44C11.64 2.04 11.82 2 12 2s.36.04.53.13l7.9 4.44c.32.17.52.5.52.88v9z"/></svg></div>
+        <h4>Cosecha</h4>
+        <p>Selección y sacrificio humanitario en el lago</p>
+        <span class="temp-badge">0 °C</span>
+      </div>
+      <div class="cold-step">
+        <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg></div>
+        <h4>Procesamiento</h4>
+        <p>Limpieza, fileteo y empaque en planta</p>
+        <span class="temp-badge">2 °C</span>
+      </div>
+      <div class="cold-step">
+        <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <h4>Empaque</h4>
+        <p>Sellado al vacío con etiqueta de trazabilidad</p>
+        <span class="temp-badge">2 °C</span>
+      </div>
+      <div class="cold-step">
+        <div class="cold-step-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <h4>Transporte</h4>
+        <p>Camión frigorífico GPS, sensor de temperatura</p>
+        <span class="temp-badge">−2 °C</span>
+      </div>
+      <div class="cold-step">
+        <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <h4>Entrega</h4>
+        <p>En tu local con remisión firmada y sellada</p>
+        <span class="temp-badge">−2 °C</span>
+      </div>
+    </div>
+
+    <div class="cold-truck-wrap">
+      <img
+        class="cold-truck-img"
+        src="camion-frigorifico.jpg"
+        alt="Camión frigorífico Volvo — flota propia TiticacaTrout"
+        loading="lazy"
+      />
+      <div class="cold-truck-overlay">
+        <div class="cold-truck-label">
+          <h4>Flota frigorífica propia</h4>
+          <p>Monitoreo de temperatura 24/7 · GPS en tiempo real · Remisión digital</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cold-info">
+      <div class="cold-info-card">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div><div class="ci-title">Cobertura</div><div class="ci-sub">La Paz, El Alto, Oruro, Cochabamba</div></div>
+      </div>
+      <div class="cold-info-card">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div><div class="ci-title">Frecuencia</div><div class="ci-sub">Lunes, miércoles y viernes</div></div>
+      </div>
+      <div class="cold-info-card">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <div><div class="ci-title">Pedido mínimo</div><div class="ci-sub">10 kg por despacho</div></div>
+      </div>
+      <div class="cold-info-card">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div><div class="ci-title">WhatsApp directo</div><div class="ci-sub">+591 777-38964</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     RECOMENDACIONES
+════════════════════════════════════ -->
+<section class="section" id="sec-recomendaciones">
+  <div class="section-inner">
+    <div class="section-tag">Testimonios</div>
+    <div class="section-title">Negocios que ya confían en TiticacaTrout</div>
+    <div class="recs-grid">
+      <div class="rec-card">
+        <div class="rec-header">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&auto=format&fit=crop&q=80" alt="Miguel Ríos" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+          <div><div class="rec-name">Miguel Ríos</div><div class="rec-role">Chef — Restaurante Altiplanico, La Paz</div></div>
+        </div>
+        <div class="rec-stars">★★★★★</div>
+        <p class="rec-text">"La frescura del producto es incomparable. Mis clientes notan la diferencia. Llevamos 2 años con TiticacaTrout y nunca han fallado en una sola entrega."</p>
+      </div>
+      <div class="rec-card">
+        <div class="rec-header">
+          <img src="https://images.unsplash.com/photo-1494790108755-2616b612b977?w=80&h=80&auto=format&fit=crop&q=80" alt="Sandra Ponce" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+          <div><div class="rec-name">Sandra Ponce</div><div class="rec-role">Compradora — Supermercado Norte, El Alto</div></div>
+        </div>
+        <div class="rec-stars">★★★★★</div>
+        <p class="rec-text">"El proceso de pedido es sencillo y la facturación siempre llega a tiempo. La trucha tiene muy buena rotación en nuestro lineal de refrigerados."</p>
+      </div>
+      <div class="rec-card">
+        <div class="rec-header">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&auto=format&fit=crop&q=80" alt="Jorge Vargas" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+          <div><div class="rec-name">Jorge Vargas</div><div class="rec-role">Gerente — Hotel Copacabana</div></div>
+        </div>
+        <div class="rec-stars">★★★★☆</div>
+        <p class="rec-text">"Decirles a los turistas que es trucha del Titicaca criada localmente añade un valor enorme a nuestra propuesta gastronómica."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     REDES SOCIALES
+     Fondo: paisaje de lago/pesca, ambiente cálido
+     Fuente: Unsplash – libre uso comercial, sin marca
+     Para reemplazar: editar .social-strip en CSS → background-image: url('img/social.jpg')
+════════════════════════════════════ -->
+<section class="social-section">
+  <div class="social-strip">
+    <div>
+      <h3>Síguenos y escríbenos</h3>
+      <p>Respondemos en menos de 2 horas en horario hábil</p>
+    </div>
+    <div class="social-btns">
+      <a class="social-btn fb-btn" href="https://www.facebook.com/share/1BCquWXYWh/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a class="social-btn tt-btn" href="https://www.tiktok.com/@titicacatruop?_r=1&_t=ZS-97C55NbGHsC" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+        TikTok
+      </a>
+      <a class="social-btn wa-btn" href="https://wa.me/59177738964" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp · 777-38964
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     PANEL PROVEEDOR INLINE
+     (se muestra tras login exitoso desde el modal)
+════════════════════════════════════ -->
+<div id="prov-inline-panel">
+  <div class="panel-inner">
+    <div class="prov-welcome">
+      <div class="prov-welcome-text">
+        <span>Bienvenido al panel de gestión,</span>
+        <strong id="prov-name-display">Administrador</strong>
+      </div>
+      <button class="logout-btn" onclick="provLogout()">Cerrar sesión</button>
+    </div>
+    <div class="panel-tabs">
+      <button class="ptab active" onclick="switchTab('tab-inv', this)">Inventario</button>
+      <button class="ptab" onclick="switchTab('tab-pedidos', this)">Pedidos</button>
+      <button class="ptab" onclick="switchTab('tab-dash', this)">Dashboard</button>
+    </div>
+    <div class="tab-content active" id="tab-inv">
+      <table class="inv-table"><thead><tr><th>Producto</th><th>Stock (kg)</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody id="inv-tbody"></tbody></table>
+    </div>
+    <div class="tab-content" id="tab-pedidos">
+      <div id="pedidos-list"></div>
+    </div>
+    <div class="tab-content" id="tab-dash">
+      <div class="dash-grid" id="dash-cards"></div>
+      <div class="mini-bar-wrap" id="dash-bars"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     CHATBOT FLOTANTE
+════════════════════════════════════ -->
+
+<!-- FAB button -->
+<button class="chat-fab" id="chat-fab" onclick="toggleChat()" aria-label="Abrir chat">
+  <span class="chat-unread" id="chat-unread">1</span>
+  <svg class="chat-fab-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <svg class="chat-fab-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<!-- Chat window -->
+<div class="chat-window" id="chat-window">
+  <div class="chat-header">
+    <div class="chat-avatar">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">TiticacaTrout</div>
+      <div class="chat-header-status">En línea · Asistente IA</div>
+    </div>
+    <div class="chat-header-powered">✦ Powered by Claude</div>
+  </div>
+
+  <div class="chat-messages" id="chat-messages"></div>
+
+  <div class="quick-replies" id="quick-replies"></div>
+
+  <a class="chat-wa-btn" href="https://wa.me/59177738964" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Hablar con un asesor por WhatsApp
+  </a>
+
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" type="text"
+           placeholder="Escribe tu mensaje..."
+           onkeydown="if(event.key==='Enter') sendMessage()"/>
+    <button class="chat-send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     FOOTER
+════════════════════════════════════ -->
+<footer>
+  <div class="footer-brand">
+    <div class="ft-name">TiticacaTrout</div>
+    <div class="ft-sub">Proveedor B2B de trucha arcoíris · Lago Titicaca, Bolivia</div>
+  </div>
+  <div class="footer-info">
+    <span>SENASAG Certificado</span>
+    <span>NIT 123456789</span>
+    <span>contacto@titicacatrout.bo</span>
+    <span>+591 777-38964</span>
+  </div>
+  <p>© 2025 TiticacaTrout. Todos los derechos reservados.</p>
+</footer>
+
+
+<!-- ════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════ -->
+<script>
+  /* ════════════════════════════════════
+     CHATBOT IA
+  ════════════════════════════════════ */
+  /* ─────────────────────────────────────
+     CHATBOT — motor de respuestas local
+  ───────────────────────────────────── */
+
+  const QUICK_SETS = {
+    inicio:    ['¿Qué productos tienen?','¿Cuáles son los precios?','¿Hacen envíos?','Quiero hacer un pedido'],
+    productos: ['Precio del filete fresco','Precio de la trucha ahumada','¿Cuánto tarda el envío?','Quiero comprar'],
+    precios:   ['¿Tienen descuentos?','¿Cuál es el pedido mínimo?','Quiero hacer un pedido','Ver catálogo'],
+    envios:    ['¿A qué ciudades entregan?','¿Cuánto tarda la entrega?','¿Cuál es el pedido mínimo?','Quiero hacer un pedido'],
+    compra:    ['¿Cómo pago?','¿Tienen factura?','Necesito una cotización','Hablar con un asesor'],
+    calidad:   ['¿Tienen certificaciones?','¿De dónde es la trucha?','¿Usan antibióticos?','Ver productos'],
+    mayorista: ['Necesito una cotización','¿Qué descuentos tienen?','Hablar con un asesor','¿Hacen envíos?'],
+    cierre:    ['Ver catálogo de productos','Hacer un pedido','Hablar con asesor','Volver al inicio'],
+  };
+
+  // Base de conocimiento: [keywords[], respuesta, quickSet]
+  const KB = [
+    // SALUDO
+    { k:['hola','buenos','buenas','saludos','hey','hi','buen dia','buenas tardes','buenas noches'],
+      r:'¡Hola! 👋 Bienvenido a *TiticacaTrout*, tu proveedor de trucha arcoíris del Lago Titicaca. ¿En qué puedo ayudarte hoy?',
+      q:'inicio' },
+
+    // QUÉ VENDEN / PRODUCTOS GENERALES
+    { k:['qué venden','que venden','qué tienen','que tienen','qué ofrecen','que ofrecen','qué productos','que productos','catálogo','catalogo','presentaciones'],
+      r:'Ofrecemos *6 productos* de trucha arcoíris del Lago Titicaca 🐟:\n\n• Trucha entera fresca (1–2 kg)\n• Filete fresco sin espinas (500 g)\n• Trucha ahumada en frío (250 g)\n• Trucha eviscerada entera (2–3 kg)\n• Filete marinado al limón (500 g)\n• Medallones congelados (1 kg)\n\nTodos con cadena de frío garantizada y certificación SENASAG.',
+      q:'productos' },
+
+    // TRUCHA ENTERA FRESCA
+    { k:['trucha entera fresca','entera fresca','trucha fresca'],
+      r:'La *Trucha entera fresca* viene en piezas de 1 a 2 kg y tiene un precio de *Bs. 45 por kg*. Es ideal para hornear entera, a la parrilla o para preparaciones gourmet. Capturada y entregada en menos de 48 horas para garantizar su frescura.',
+      q:'compra' },
+
+    // FILETE FRESCO
+    { k:['filete fresco','filete sin espinas','filete fresco sin espinas','precio del filete fresco'],
+      r:'El *Filete fresco sin espinas* viene en presentaciones de 500 g a *Bs. 55 por unidad*. Está limpio, sin espinas y listo para cocinar — perfecto para restaurantes y hoteles que buscan rapidez y calidad.',
+      q:'compra' },
+
+    // TRUCHA AHUMADA
+    { k:['ahumada','ahumado','trucha ahumada','ahumada en frio','ahumada en frío','precio de la trucha ahumada'],
+      r:'La *Trucha ahumada en frío* viene en paquetes de 250 g a *Bs. 65 por paquete*. El proceso de ahumado en frío preserva todos los nutrientes y Omega-3. Está sellada al vacío con 21 días de vida útil en refrigeración — ideal para aperitivos y tapas gourmet.',
+      q:'compra' },
+
+    // TRUCHA EVISCERADA
+    { k:['eviscerada','trucha eviscerada','entera eviscerada'],
+      r:'La *Trucha eviscerada entera* viene en piezas de 2 a 3 kg a *Bs. 38 por kg*. Ya viene limpia por dentro, lista para hornear o asar. Es la opción más económica y con mayor rendimiento en carne, ideal para eventos y banquetes.',
+      q:'compra' },
+
+    // FILETE MARINADO
+    { k:['marinado','marinada','filete marinado','limón','limon','filete marinado al limon','filete marinado al limón'],
+      r:'El *Filete marinado al limón* viene en presentaciones de 500 g a *Bs. 62 por unidad*. Está marinado con limón y hierbas andinas naturales — solo hay que calentar al horno por 15 minutos. Sin conservantes artificiales ni sodio excesivo.',
+      q:'compra' },
+
+    // MEDALLONES CONGELADOS
+    { k:['medallones','medallones congelados','congelado','congelados'],
+      r:'Los *Medallones congelados* vienen en bolsas de 1 kg a *Bs. 78 por bolsa*. Congelados con tecnología IQF (cada medallón separado), mantienen hasta 12 meses en congelador a -18°C. Porciones uniformes, ideales para restaurantes con control de costos.',
+      q:'compra' },
+
+    // PRECIOS GENERALES
+    { k:['precio','precios','cuánto cuesta','cuanto cuesta','cuánto vale','cuanto vale','costo','costos','cuánto es','cuanto es','valor'],
+      r:'Nuestros precios en bolivianos son 💰:\n\n• Trucha entera fresca: *Bs. 45/kg*\n• Filete fresco sin espinas: *Bs. 55/500g*\n• Trucha ahumada en frío: *Bs. 65/250g*\n• Trucha eviscerada entera: *Bs. 38/kg*\n• Filete marinado al limón: *Bs. 62/500g*\n• Medallones congelados: *Bs. 78/kg*\n\n¿Te interesa alguno en particular?',
+      q:'precios' },
+
+    // DESCUENTOS
+    { k:['descuento','descuentos','oferta','ofertas','promocion','promoción','promociones','precio especial','precio por mayor'],
+      r:'¡Sí! Ofrecemos *descuentos por volumen* para pedidos grandes 🎉. A partir de 50 kg negociamos condiciones especiales según el producto y la frecuencia de compra. Para una cotización personalizada, un asesor puede atenderte directamente por WhatsApp.',
+      q:'mayorista' },
+
+    // ENVÍOS / ENTREGAS
+    { k:['envio','envios','envío','envíos','hacen envios','hacen envíos','entregan','entrega','delivery','despacho','despachos'],
+      r:'¡Sí hacemos entregas! 🚛 Cubrimos *La Paz, El Alto, Oruro y Cochabamba* los días *lunes, miércoles y viernes*. Contamos con camión frigorífico propio para mantener la cadena de frío en todo momento.',
+      q:'envios' },
+
+    // CIUDADES
+    { k:['ciudades','ciudad','dónde entregan','donde entregan','a dónde llegan','cobertura','zonas','llegana','llegan a','santa cruz','potosi','sucre'],
+      r:'Actualmente entregamos en *La Paz, El Alto, Oruro y Cochabamba* 📍. Si te encuentras en otra ciudad como Santa Cruz, Potosí o Sucre, contáctanos por WhatsApp para evaluar opciones de envío especiales para tu caso.',
+      q:'envios' },
+
+    // TIEMPO DE ENTREGA
+    { k:['cuánto tarda','cuanto tarda','tiempo de entrega','cuándo llega','cuando llega','días de entrega','dias de entrega','plazo'],
+      r:'Las entregas se realizan en *24 a 48 horas* desde que confirmas tu pedido ⏱️. Los días de reparto son *lunes, miércoles y viernes*. Si tu pedido entra antes del mediodía, generalmente se coordina para el día de entrega más próximo.',
+      q:'envios' },
+
+    // PEDIDO MÍNIMO
+    { k:['pedido minimo','pedido mínimo','minimo','mínimo','cuánto es lo mínimo','cuanto es lo minimo','mínimo de compra','menos de'],
+      r:'El *pedido mínimo es de 10 kg* por despacho 📦. Este mínimo aplica para mantener la cadena de frío y garantizar la calidad del producto en la entrega. Para pedidos menores, puedes escribirnos por WhatsApp y buscamos una solución.',
+      q:'compra' },
+
+    // CÓMO COMPRAR / HACER PEDIDO
+    { k:['quiero comprar','como compro','cómo compro','cómo hago un pedido','como hago un pedido','hacer un pedido','quiero hacer un pedido','proceso de compra','cómo pido','como pido'],
+      r:'¡Excelente! Tienes *3 formas* de hacer tu pedido 🛒:\n\n1. *Formulario online* → Ve a nuestro catálogo y usa el carrito de compras.\n2. *WhatsApp* → Escríbenos al +591 777-38964 con el producto y cantidad.\n3. *Email* → contacto@titicacatrout.bo\n\n¿Qué producto y cantidad necesitas?',
+      q:'compra' },
+
+    // CÓMO PAGAR
+    { k:['cómo pago','como pago','formas de pago','metodo de pago','método de pago','pagos','transferencia','efectivo','qr','tigo money'],
+      r:'Aceptamos los siguientes *métodos de pago* 💳:\n\n• Transferencia bancaria (BCP, BNB, BISA)\n• Pago QR\n• Tigo Money\n• Efectivo contra entrega (pedidos regulares)\n\nPara clientes con cuenta, también manejamos crédito a 15 días. Consulta condiciones con tu asesor.',
+      q:'compra' },
+
+    // FACTURA
+    { k:['factura','facturación','facturacion','nit','nota fiscal','comprobante'],
+      r:'Sí, emitimos *nota fiscal* (factura) por todas las compras 🧾. Nuestro NIT es 123456789. Indícanos tu NIT o CI al momento del pedido y la factura se entrega junto con el producto o se envía por email.',
+      q:'compra' },
+
+    // CALIDAD / FRESCURA
+    { k:['fresca','fresco','frescura','calidad','qué tan fresco','que tan fresco','es fresca','es fresco'],
+      r:'Garantizamos *máxima frescura* 🐟. La trucha sale de nuestros centros de acopio en el Lago Titicaca y llega a tu negocio en menos de 48 horas. Trabajamos con cadena de frío continua: desde el lago hasta tu puerta, nunca se rompe la temperatura.',
+      q:'calidad' },
+
+    // CERTIFICACIONES / SENASAG
+    { k:['certificacion','certificación','certificado','senasag','habilitado','habilitación','sanitario','sanidad','registro'],
+      r:'Contamos con *certificación SENASAG* vigente, lo que garantiza que nuestros productos cumplen con todas las normas sanitarias bolivianas 🏅. También manejamos trazabilidad total de cada lote, desde el criadero hasta la entrega.',
+      q:'calidad' },
+
+    // ANTIBIÓTICOS / NATURALES
+    { k:['antibioticos','antibióticos','hormona','hormonas','quimico','químico','natural','organico','orgánico','sin quimicos','sin antibióticos'],
+      r:'*Cero antibióticos y cero hormonas* 🌿. Nuestra trucha se cría en las aguas limpias del Lago Titicaca a 3.800 m.s.n.m., con alimentación controlada y condiciones naturales. Trabajamos con crianza artesanal y responsable.',
+      q:'calidad' },
+
+    // ORIGEN / LAGO TITICACA
+    { k:['de dónde','de donde','origen','titicaca','lago','lago titicaca','boliviana','bolivia','puno','peru'],
+      r:'Nuestra trucha es *100% boliviana*, criada en las aguas cristalinas del *Lago Titicaca a 3.800 m.s.n.m.* 🏔️. El altiplano le da un sabor único y una textura firme inigualable. Es uno de los productos acuícolas más limpios y naturales de Sudamérica.',
+      q:'calidad' },
+
+    // NUTRICIÓN / BENEFICIOS
+    { k:['nutricion','nutrición','nutritiva','nutritivo','proteina','proteína','omega','saludable','beneficios','vitaminas'],
+      r:'La trucha del Titicaca es *muy nutritiva* 💪:\n\n• 20 g de proteína por cada 100 g\n• Rica en Omega-3 EPA y DHA (protege el corazón)\n• Fuente natural de Vitamina D y B12\n• Baja en grasas saturadas\n• Fácil digestión\n\nEs uno de los pescados más completos nutricionalmente.',
+      q:'calidad' },
+
+    // MAYORISTAS / NEGOCIOS
+    { k:['mayorista','mayoristas','al por mayor','por mayor','negocio','restaurante','hotel','supermercado','empresa','proveedor','ventas para negocios','venta para negocios'],
+      r:'¡Trabajamos con negocios de todos los tamaños! 🏢 Tenemos *precios especiales para restaurantes, hoteles, supermercados y catering*. Ofrecemos entrega regular, facturación, crédito y atención personalizada. ¿Me dices qué tipo de negocio tienes y qué cantidades manejas?',
+      q:'mayorista' },
+
+    // COTIZACIÓN
+    { k:['cotizacion','cotización','presupuesto','proforma','necesito una cotizacion','necesito una cotización','precio especial'],
+      r:'Con gusto te preparamos una *cotización personalizada* 📋. Para hacerlo necesitamos: producto(s) de interés, cantidad aproximada y frecuencia de compra (semanal, quincenal, mensual). Escríbenos por WhatsApp al *+591 777-38964* y te respondemos en menos de 2 horas.',
+      q:'mayorista' },
+
+    // CONSULTA TÉCNICA
+    { k:['consulta tecnica','consulta técnica','tecnica','técnica','conservacion','conservación','temperatura','almacenamiento','vida util','vida útil'],
+      r:'Para consultas técnicas sobre *conservación, temperatura y vida útil* de los productos, nuestro equipo especializado puede orientarte 🧊. Los filetes frescos duran 3-4 días en refrigeración (0-4°C) y los medallones congelados hasta 12 meses a -18°C. Para más detalles, escríbenos por WhatsApp.',
+      q:'calidad' },
+
+    // SEGURO / CONFIANZA
+    { k:['seguro','confiable','confianza','es seguro','puedo confiar','garantia','garantía','seria','serios'],
+      r:'Somos una empresa *seria y confiable* con más de 5 años en el mercado boliviano 🏆. Contamos con certificación SENASAG, más de 24 clientes activos entre restaurantes, hoteles y supermercados, y nunca hemos fallado en una entrega. Tu satisfacción es nuestra prioridad.',
+      q:'calidad' },
+
+    // POR QUÉ ELEGIR
+    { k:['por qué elegir','porque elegir','por que elegir','por qué ustedes','ventajas','diferencial','diferencia','mejor que','qué los diferencia'],
+      r:'*5 razones para elegir TiticacaTrout* ⭐:\n\n1. Trucha fresca del Lago Titicaca en 48h\n2. Cadena de frío nunca interrumpida\n3. Certificación SENASAG vigente\n4. Sin antibióticos ni hormonas\n5. Atención personalizada y factura incluida\n\nSomos tu proveedor más confiable de Bolivia.',
+      q:'calidad' },
+
+    // RECLAMO / PROBLEMA
+    { k:['reclamo','reclamos','problema','queja','malo','podrido','feo','no llego','no llegó','error','equivocacion','equivocación'],
+      r:'Lamentamos el inconveniente 😔. La calidad y tu satisfacción son nuestra máxima prioridad. Por favor escríbenos *inmediatamente por WhatsApp al +591 777-38964* con una foto del problema y el número de pedido — un asesor te atenderá de inmediato y buscaremos la solución más rápida.',
+      q:'cierre' },
+
+    // HORARIO DE ATENCIÓN
+    { k:['horario','atencion','atención','cuando atienden','cuándo atienden','hora','horas','disponible'],
+      r:'Nuestro horario de atención es *lunes a viernes de 8:00 a 18:00* y *sábados de 8:00 a 13:00* 🕗. Por WhatsApp respondemos también fuera de horario para pedidos urgentes. El reparto se realiza lunes, miércoles y viernes.',
+      q:'compra' },
+
+    // GRACIAS
+    { k:['gracias','muchas gracias','grax','thank','perfecto','excelente','muy bien','genial'],
+      r:'¡Ha sido un placer ayudarte! 😊 Si en algún momento necesitas hacer un pedido o tienes más preguntas, aquí estaremos. ¡Que tengas un excelente día!',
+      q:'cierre' },
+
+    // ADIÓS / CIERRE
+    { k:['adios','adiós','chao','chau','bye','hasta luego','nos vemos','hasta pronto'],
+      r:'¡Hasta pronto! 👋 Gracias por contactar a *TiticacaTrout*. Recuerda que puedes escribirnos por WhatsApp o visitar nuestro catálogo cuando quieras. ¡Que tengas un excelente día!',
+      q:'cierre' },
+
+    // VER CATÁLOGO
+    { k:['ver catalogo','ver catálogo','catalogo','catálogo','ir al catalogo','ir al catálogo'],
+      r:'Puedes ver todos nuestros productos con fotos, precios y beneficios en nuestro *catálogo online* 📖. Haz clic en el botón "Ver catálogo" del menú superior o directamente en el enlace de abajo.',
+      q:'productos' },
+
+    // WHATSAPP / CONTACTO
+    { k:['whatsapp','hablar con asesor','hablar con un asesor','contacto','contactar','telefono','teléfono','llamar','email','correo'],
+      r:'Puedes contactarnos directamente por:\n\n📱 *WhatsApp:* +591 777-38964\n📧 *Email:* contacto@titicacatrout.bo\n\nNuestro equipo responde en menos de 2 horas en horario laboral. Para pedidos urgentes, WhatsApp es la vía más rápida.',
+      q:'cierre' },
+  ];
+
+  // Respuesta por defecto cuando no hay match
+  const DEFAULT_RESPONSES = [
+    'No estoy seguro de entender tu pregunta 🤔. ¿Podrías ser más específico? También puedes contactarnos directamente por *WhatsApp al +591 777-38964*.',
+    '¡Buena pregunta! Para darte la mejor respuesta, te recomiendo hablar con uno de nuestros asesores por *WhatsApp al +591 777-38964* — te atienden en minutos.',
+    'Hmm, eso está fuera de lo que puedo responder aquí 😅. Escríbenos por *WhatsApp* y con gusto te ayudamos con cualquier consulta.',
+  ];
+  let defaultIdx = 0;
+
+  function getBotResponse(text) {
+    const low = text.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // quitar tildes
+      .replace(/[^a-z0-9 ]/g,' ');
+
+    for (const entry of KB) {
+      for (const kw of entry.k) {
+        const kwNorm = kw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ');
+        if (low.includes(kwNorm)) return { r: entry.r, q: entry.q };
+      }
+    }
+    // fallback
+    const r = DEFAULT_RESPONSES[defaultIdx % DEFAULT_RESPONSES.length];
+    defaultIdx++;
+    return { r, q:'inicio' };
+  }
+
+  let chatOpen = false;
+
+  function toggleChat() {
+    chatOpen = !chatOpen;
+    document.getElementById('chat-fab').classList.toggle('open', chatOpen);
+    document.getElementById('chat-window').classList.toggle('open', chatOpen);
+    document.getElementById('chat-unread').classList.remove('show');
+    if (chatOpen && document.getElementById('chat-messages').children.length === 0) initChat();
+    if (chatOpen) setTimeout(() => document.getElementById('chat-input').focus(), 300);
+  }
+
+  function initChat() {
+    appendBotMsg('¡Hola! 👋 Bienvenido a *TiticacaTrout*, tu proveedor de trucha arcoíris del Lago Titicaca. ¿Cómo puedo ayudarte hoy?');
+    setQuickReplies('inicio');
+  }
+
+  function setQuickReplies(set) {
+    const qr = document.getElementById('quick-replies');
+    const options = QUICK_SETS[set] || QUICK_SETS.inicio;
+    qr.innerHTML = options.map(o =>
+      `<button class="qr-btn" onclick="sendQuick('${o.replace(/'/g,"&#39;")}')">${o}</button>`
+    ).join('');
+  }
+
+  function sendQuick(text) {
+    document.getElementById('quick-replies').innerHTML = '';
+    sendMessage(text);
+  }
+
+  function appendBotMsg(text) {
+    const msgs = document.getElementById('chat-messages');
+    const time = new Date().toLocaleTimeString('es-BO',{hour:'2-digit',minute:'2-digit'});
+    const formatted = text
+      .replace(/\*(.*?)\*/g,'<strong>$1</strong>')
+      .replace(/\n/g,'<br>');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.innerHTML = `
+      <div class="msg-avatar">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div>
+        <div class="msg-bubble">${formatted}</div>
+        <span class="msg-time">${time}</span>
+      </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function appendUserMsg(text) {
+    const msgs = document.getElementById('chat-messages');
+    const time = new Date().toLocaleTimeString('es-BO',{hour:'2-digit',minute:'2-digit'});
+    const div = document.createElement('div');
+    div.className = 'msg user';
+    div.innerHTML = `
+      <div>
+        <div class="msg-bubble">${text}</div>
+        <span class="msg-time">${time}</span>
+      </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function showTyping() {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg bot'; div.id = 'typing-indicator';
+    div.innerHTML = `
+      <div class="msg-avatar">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function hideTyping() {
+    const t = document.getElementById('typing-indicator');
+    if (t) t.remove();
+  }
+
+  function sendMessage(override) {
+    const input = document.getElementById('chat-input');
+    const text = (override !== undefined ? override : input.value).trim();
+    if (!text) return;
+    input.value = '';
+    document.getElementById('quick-replies').innerHTML = '';
+
+    appendUserMsg(text);
+    showTyping();
+
+    // Simula delay de escritura (600–900 ms)
+    setTimeout(() => {
+      hideTyping();
+      const { r, q } = getBotResponse(text);
+      appendBotMsg(r);
+      setQuickReplies(q);
+    }, 600 + Math.random() * 300);
+  }
+
+  // Punto rojo de notificación a los 3s
+  setTimeout(() => {
+    if (!chatOpen) document.getElementById('chat-unread').classList.add('show');
+  }, 3000);
+
+  const CREDENCIALES = [
+    { user: 'admin@titicacatrout.bo',  pass: 'Titicaca2025', name: 'Administrador' },
+    { user: 'ventas@titicacatrout.bo', pass: 'Ventas2025',   name: 'Equipo Ventas' }
+  ];
+
+  /* ── Inventario demo ── */
+  const inventario = [
+    { id: 1, nombre: 'Trucha entera fresca (1–2 kg)',    stock: 280 },
+    { id: 2, nombre: 'Filete fresco sin espinas (500 g)', stock: 150 },
+    { id: 3, nombre: 'Trucha ahumada en frío (250 g)',   stock: 60  },
+    { id: 4, nombre: 'Trucha eviscerada entera (2–3 kg)',stock: 120 },
+    { id: 5, nombre: 'Medallones congelados (1 kg)',     stock: 0   },
+    { id: 6, nombre: 'Filete marinado al limón (500 g)', stock: 30  },
+  ];
+
+  /* ── Pedidos demo ── */
+  const pedidos = [
+    { id: '#TT-0041', cliente: 'Rest. Altiplanico',  items: '20 kg Trucha entera',      total: 'Bs. 640',   estado: 'pendiente'  },
+    { id: '#TT-0040', cliente: 'Supermercado Norte', items: '50 kg Filete fresco',       total: 'Bs. 2.500', estado: 'en_camino'  },
+    { id: '#TT-0039', cliente: 'Hotel Copacabana',   items: '15 kg Trucha ahumada',      total: 'Bs. 900',   estado: 'entregado'  },
+    { id: '#TT-0038', cliente: 'Rest. La Cabaña',    items: '10 kg Medallones',          total: 'Bs. 380',   estado: 'pendiente'  },
+  ];
+
+  /* ── Modal ── */
+  function openProvModal() {
+    document.getElementById('modal-prov').classList.add('open');
+    document.getElementById('prov-user').focus();
+    document.body.style.overflow = 'hidden';
+  }
+  function closeProvModal() {
+    document.getElementById('modal-prov').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('prov-error').style.display = 'none';
+  }
+  function handleModalClick(e) {
+    if (e.target === document.getElementById('modal-prov')) closeProvModal();
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeProvModal();
+  });
+
+  /* ── Login ── */
+  function provLogin() {
+    const u = document.getElementById('prov-user').value.trim();
+    const p = document.getElementById('prov-pass').value;
+    const match = CREDENCIALES.find(c => c.user === u && c.pass === p);
+    if (!match) {
+      document.getElementById('prov-error').style.display = 'block';
+      return;
+    }
+    closeProvModal();
+    document.getElementById('prov-name-display').textContent = match.name;
+    const panel = document.getElementById('prov-inline-panel');
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    renderInventario();
+    renderPedidos();
+    renderDash();
+  }
+
+  function provLogout() {
+    document.getElementById('prov-inline-panel').style.display = 'none';
+    document.getElementById('prov-user').value = '';
+    document.getElementById('prov-pass').value = '';
+  }
+
+  /* ── Tabs ── */
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  /* ── Inventario ── */
+  function renderInventario() {
+    document.getElementById('inv-tbody').innerHTML = inventario.map(p => {
+      const cls  = p.stock === 0 ? 'stock-out' : p.stock < 50 ? 'stock-low' : 'stock-ok';
+      const txt  = p.stock === 0 ? 'Agotado'   : p.stock < 50 ? 'Stock bajo' : 'Disponible';
+      return `<tr>
+        <td>${p.nombre}</td>
+        <td><input type="number" id="stock-${p.id}" value="${p.stock}" min="0" /></td>
+        <td><span class="stock-badge ${cls}" id="badge-${p.id}">${txt}</span></td>
+        <td><button class="save-row-btn" onclick="saveStock(${p.id})">Guardar</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function saveStock(id) {
+    const val  = parseInt(document.getElementById('stock-' + id).value) || 0;
+    const item = inventario.find(p => p.id === id);
+    item.stock = val;
+    const badge = document.getElementById('badge-' + id);
+    if (val === 0)       { badge.className = 'stock-badge stock-out'; badge.textContent = 'Agotado'; }
+    else if (val < 50)   { badge.className = 'stock-badge stock-low'; badge.textContent = 'Stock bajo'; }
+    else                 { badge.className = 'stock-badge stock-ok';  badge.textContent = 'Disponible'; }
+    alert('✔ Stock actualizado: ' + item.nombre);
+  }
+
+  /* ── Pedidos ── */
+  function renderPedidos() {
+    document.getElementById('pedidos-list').innerHTML = pedidos.map((p, i) => `
+      <div class="order-card">
+        <div class="order-top">
+          <div>
+            <span class="order-id">${p.id}</span>
+            <span style="font-size:12px;color:#5f6e80;margin-left:10px;">${p.cliente}</span>
+          </div>
+          <select class="order-status-select" onchange="pedidos[${i}].estado=this.value">
+            <option value="pendiente"  ${p.estado==='pendiente' ?'selected':''}>⏳ Pendiente</option>
+            <option value="en_camino"  ${p.estado==='en_camino' ?'selected':''}>🚛 En camino</option>
+            <option value="entregado"  ${p.estado==='entregado' ?'selected':''}>✅ Entregado</option>
+          </select>
+        </div>
+        <div class="order-detail">${p.items} · <strong>${p.total}</strong></div>
+      </div>`).join('');
+  }
+
+  /* ── Dashboard ── */
+  function renderDash() {
+    const cards = [
+      { num: 'Bs. 8.420', label: 'Ventas este mes' },
+      { num: '23',        label: 'Pedidos totales' },
+      { num: '4',         label: 'Pedidos pendientes' },
+      { num: '18',        label: 'Clientes activos' },
+    ];
+    document.getElementById('dash-cards').innerHTML = cards.map(c =>
+      `<div class="dash-card"><div class="dash-num">${c.num}</div><div class="dash-label">${c.label}</div></div>`
+    ).join('');
+
+    const top = [
+      { name: 'Filete fresco sin espinas', pct: 88 },
+      { name: 'Trucha entera fresca',      pct: 72 },
+      { name: 'Trucha eviscerada entera',  pct: 55 },
+      { name: 'Trucha ahumada en frío',    pct: 40 },
+      { name: 'Filete marinado al limón',  pct: 22 },
+    ];
+    document.getElementById('dash-bars').innerHTML =
+      '<p style="font-size:11px;font-weight:600;color:#5f6e80;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.06em;">Productos más vendidos este mes</p>' +
+      top.map(p => `
+        <div class="mini-bar-row">
+          <span class="mini-bar-name">${p.name}</span>
+          <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${p.pct}%"></div></div>
+          <span class="mini-bar-val">${p.pct}%</span>
+        </div>`).join('');
+  }
+</script>
+</body>
+</html>

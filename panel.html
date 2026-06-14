@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Proveedor – TiticacaTrout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#1a1a2e;line-height:1.6;min-height:100vh}
+
+    :root{
+      --blue-dark:#042C53;
+      --blue-mid:#0C447C;
+      --blue-light:#185FA5;
+      --blue-pale:#E6F1FB;
+      --blue-muted:#B5D4F4;
+      --text-muted:#5f6e80;
+      --border:rgba(0,0,0,0.08);
+      --radius-sm:8px;
+      --radius-md:12px;
+      --radius-lg:16px;
+      --green:#2e7d32;
+      --green-pale:#e8f5e9;
+      --red:#c62828;
+      --red-pale:#ffebee;
+      --amber:#e65100;
+      --amber-pale:#fff3e0;
+      --sidebar-w:240px;
+    }
+
+    /* ── LOGIN SCREEN ── */
+    .login-screen{
+      display:flex;min-height:100vh;
+    }
+    .login-left{
+      flex:1;background:var(--blue-dark);
+      display:flex;flex-direction:column;justify-content:center;
+      padding:3rem;position:relative;overflow:hidden;
+    }
+    .login-left::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 20% 50%,rgba(24,95,165,0.4) 0%,transparent 60%);
+    }
+    .login-left-content{position:relative;z-index:1;max-width:420px;}
+    .login-brand{display:flex;align-items:center;gap:12px;margin-bottom:3rem;}
+    .login-brand-icon{
+      width:48px;height:48px;background:rgba(255,255,255,0.12);
+      border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,0.2);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .login-brand-icon svg{width:26px;height:26px;stroke:#85B7EB;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .login-brand-name{font-size:18px;font-weight:600;color:#fff;}
+    .login-brand-sub{font-size:11px;color:#85B7EB;margin-top:1px;letter-spacing:.06em;text-transform:uppercase;}
+    .login-left h1{font-family:'Playfair Display',serif;font-size:40px;font-weight:600;color:#fff;line-height:1.2;margin-bottom:1rem;}
+    .login-left h1 em{color:#85B7EB;font-style:normal;}
+    .login-left p{font-size:15px;color:#B5D4F4;line-height:1.8;margin-bottom:2.5rem;}
+    .login-feature{display:flex;align-items:center;gap:10px;margin-bottom:0.85rem;}
+    .login-feature svg{width:16px;height:16px;stroke:#5DCAA5;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+    .login-feature span{font-size:13px;color:#B5D4F4;}
+
+    .login-right{
+      width:480px;background:#fff;
+      display:flex;align-items:center;justify-content:center;padding:3rem;
+    }
+    .login-form-wrap{width:100%;max-width:360px;}
+    .login-form-wrap h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--blue-dark);margin-bottom:0.3rem;}
+    .login-form-wrap p{font-size:13px;color:var(--text-muted);margin-bottom:2rem;}
+    .fg{margin-bottom:1.1rem;}
+    .fg label{display:block;font-size:11px;font-weight:600;color:var(--blue-dark);margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;}
+    .fg input{
+      width:100%;padding:12px 14px;border:1.5px solid var(--border);
+      border-radius:var(--radius-sm);font-size:14px;font-family:'Inter',sans-serif;
+      color:var(--blue-dark);background:#fafbfc;transition:border-color .2s;outline:none;
+    }
+    .fg input:focus{border-color:var(--blue-light);background:#fff;}
+    .login-btn{
+      width:100%;padding:13px;background:var(--blue-dark);color:#fff;
+      border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;
+      cursor:pointer;font-family:'Inter',sans-serif;margin-top:0.5rem;
+      transition:background .2s;
+    }
+    .login-btn:hover{background:var(--blue-mid);}
+    .login-error{
+      display:none;background:var(--red-pale);color:var(--red);
+      border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;
+      margin-top:0.75rem;text-align:center;
+    }
+    .login-hint{
+      margin-top:1.25rem;padding:0.9rem;background:#f7fafd;
+      border-radius:var(--radius-sm);font-size:12px;color:var(--text-muted);
+      line-height:1.7;border:1px solid var(--border);
+    }
+    .login-hint strong{color:var(--blue-dark);}
+
+    /* ── APP SHELL ── */
+    .app{display:none;min-height:100vh;}
+    .app.visible{display:flex;}
+
+    /* SIDEBAR */
+    .sidebar{
+      width:var(--sidebar-w);background:var(--blue-dark);
+      display:flex;flex-direction:column;position:fixed;
+      top:0;left:0;bottom:0;z-index:50;
+      box-shadow:4px 0 24px rgba(4,44,83,0.18);
+    }
+    .sidebar-logo{
+      padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.07);
+      display:flex;align-items:center;gap:10px;
+    }
+    .sidebar-logo-icon{
+      width:38px;height:38px;background:rgba(255,255,255,0.10);
+      border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,0.15);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .sidebar-logo-icon svg{width:20px;height:20px;stroke:#85B7EB;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .sidebar-logo-text{font-size:14px;font-weight:600;color:#fff;}
+    .sidebar-logo-sub{font-size:10px;color:#85B7EB;letter-spacing:.05em;text-transform:uppercase;}
+
+    .sidebar-nav{flex:1;padding:1.25rem 0.75rem;overflow-y:auto;}
+    .nav-section-label{
+      font-size:10px;font-weight:600;color:rgba(133,183,235,0.5);
+      letter-spacing:.1em;text-transform:uppercase;
+      padding:0 0.75rem;margin-bottom:0.5rem;margin-top:1.25rem;
+    }
+    .nav-section-label:first-child{margin-top:0;}
+    .nav-item{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:var(--radius-sm);
+      font-size:13px;font-weight:500;color:#B5D4F4;
+      cursor:pointer;transition:background .15s,color .15s;
+      margin-bottom:2px;
+    }
+    .nav-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+    .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff;}
+    .nav-item.active{background:rgba(255,255,255,0.12);color:#fff;font-weight:600;}
+    .nav-item .badge{
+      margin-left:auto;background:var(--red);color:#fff;
+      font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;
+    }
+
+    .sidebar-footer{
+      padding:1rem 0.75rem;border-top:1px solid rgba(255,255,255,0.07);
+    }
+    .user-row{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:var(--radius-sm);
+    }
+    .user-avatar{
+      width:34px;height:34px;border-radius:50%;
+      background:var(--blue-light);
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
+    }
+    .user-name{font-size:13px;font-weight:600;color:#fff;}
+    .user-role{font-size:11px;color:#85B7EB;}
+    .logout-link{
+      display:flex;align-items:center;gap:8px;
+      padding:9px 12px;border-radius:var(--radius-sm);
+      font-size:12px;color:#85B7EB;cursor:pointer;margin-top:4px;
+      transition:background .15s,color .15s;
+    }
+    .logout-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+    .logout-link:hover{background:rgba(255,255,255,0.07);color:#fff;}
+
+    /* MAIN */
+    .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+
+    /* TOPBAR */
+    .topbar{
+      background:#fff;border-bottom:1px solid var(--border);
+      padding:0 2rem;height:64px;display:flex;align-items:center;
+      justify-content:space-between;position:sticky;top:0;z-index:40;
+    }
+    .topbar-title{font-size:18px;font-weight:600;color:var(--blue-dark);}
+    .topbar-right{display:flex;align-items:center;gap:1rem;}
+    .topbar-date{font-size:12px;color:var(--text-muted);}
+    .topbar-badge{
+      background:var(--blue-pale);color:var(--blue-dark);
+      font-size:11px;font-weight:600;padding:5px 12px;
+      border-radius:20px;border:1px solid var(--blue-muted);
+    }
+
+    /* PAGE CONTENT */
+    .page{display:none;padding:2rem;}
+    .page.active{display:block;}
+
+    /* KPI CARDS */
+    .kpi-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);
+      gap:1.25rem;margin-bottom:2rem;
+    }
+    .kpi-card{
+      background:#fff;border-radius:var(--radius-md);
+      border:1px solid var(--border);padding:1.5rem;
+      box-shadow:0 2px 8px rgba(4,44,83,0.04);
+      position:relative;overflow:hidden;
+    }
+    .kpi-card::after{
+      content:'';position:absolute;top:0;left:0;
+      width:4px;height:100%;border-radius:4px 0 0 4px;
+    }
+    .kpi-card.blue::after{background:var(--blue-light);}
+    .kpi-card.green::after{background:var(--green);}
+    .kpi-card.amber::after{background:var(--amber);}
+    .kpi-card.red::after{background:var(--red);}
+    .kpi-icon{
+      width:40px;height:40px;border-radius:var(--radius-sm);
+      display:flex;align-items:center;justify-content:center;margin-bottom:1rem;
+    }
+    .kpi-icon svg{width:20px;height:20px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .kpi-card.blue .kpi-icon{background:var(--blue-pale);}
+    .kpi-card.blue .kpi-icon svg{stroke:var(--blue-light);}
+    .kpi-card.green .kpi-icon{background:var(--green-pale);}
+    .kpi-card.green .kpi-icon svg{stroke:var(--green);}
+    .kpi-card.amber .kpi-icon{background:var(--amber-pale);}
+    .kpi-card.amber .kpi-icon svg{stroke:var(--amber);}
+    .kpi-card.red .kpi-icon{background:var(--red-pale);}
+    .kpi-card.red .kpi-icon svg{stroke:var(--red);}
+    .kpi-val{font-size:28px;font-weight:700;color:var(--blue-dark);line-height:1;}
+    .kpi-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+    .kpi-trend{
+      font-size:11px;font-weight:600;margin-top:0.6rem;
+      display:flex;align-items:center;gap:4px;
+    }
+    .kpi-trend.up{color:var(--green);}
+    .kpi-trend.down{color:var(--red);}
+    .kpi-trend svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+    /* CHART SECTION */
+    .dash-row{display:grid;grid-template-columns:1fr 340px;gap:1.25rem;margin-bottom:2rem;}
+    .card{background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);padding:1.5rem;box-shadow:0 2px 8px rgba(4,44,83,0.04);}
+    .card-title{font-size:14px;font-weight:600;color:var(--blue-dark);margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;}
+    .card-title span{font-size:11px;font-weight:400;color:var(--text-muted);}
+
+    /* BAR CHART */
+    .bar-chart{display:flex;align-items:flex-end;gap:10px;height:180px;padding-top:1rem;}
+    .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .bar-fill-wrap{width:100%;flex:1;display:flex;align-items:flex-end;}
+    .bar-fill{
+      width:100%;border-radius:4px 4px 0 0;
+      background:linear-gradient(180deg,var(--blue-light),var(--blue-mid));
+      transition:height .6s cubic-bezier(.4,0,.2,1);
+      min-height:4px;
+    }
+    .bar-fill.highlight{background:linear-gradient(180deg,#5DCAA5,#2e7d32);}
+    .bar-label{font-size:10px;color:var(--text-muted);text-align:center;}
+    .bar-val{font-size:11px;font-weight:600;color:var(--blue-dark);}
+
+    /* DONUT */
+    .donut-wrap{display:flex;flex-direction:column;align-items:center;gap:1rem;}
+    .donut-svg{width:140px;height:140px;}
+    .donut-legend{width:100%;}
+    .donut-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+    .donut-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .donut-item-name{font-size:12px;color:var(--text-muted);flex:1;}
+    .donut-item-pct{font-size:12px;font-weight:600;color:var(--blue-dark);}
+
+    /* INVENTORY TABLE */
+    .inv-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;}
+    .inv-search{
+      padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+      font-size:13px;font-family:'Inter',sans-serif;color:var(--blue-dark);
+      background:#fafbfc;outline:none;width:240px;transition:border-color .2s;
+    }
+    .inv-search:focus{border-color:var(--blue-light);}
+    .save-all-btn{
+      background:var(--blue-dark);color:#fff;border:none;
+      border-radius:var(--radius-sm);padding:9px 20px;
+      font-size:13px;font-weight:600;cursor:pointer;
+      font-family:'Inter',sans-serif;transition:background .2s;
+    }
+    .save-all-btn:hover{background:var(--blue-mid);}
+
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;}
+    th{
+      padding:10px 14px;text-align:left;font-size:11px;font-weight:600;
+      color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;
+      border-bottom:2px solid var(--border);background:#fafbfc;
+    }
+    td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--blue-dark);vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:#f7fafd;}
+    .product-cell{display:flex;align-items:center;gap:10px;}
+    .product-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .product-dot.fresh{background:#2196f3;}
+    .product-dot.smoked{background:#795548;}
+    .product-dot.frozen{background:#0288d1;}
+    .product-dot.marinated{background:#2e7d32;}
+
+    .stock-input{
+      padding:7px 10px;border:1.5px solid var(--border);
+      border-radius:var(--radius-sm);font-size:13px;
+      font-family:'Inter',sans-serif;width:90px;
+      color:var(--blue-dark);background:#fff;outline:none;
+      transition:border-color .2s;
+      -moz-appearance:textfield;
+    }
+    .stock-input:focus{border-color:var(--blue-light);}
+    .stock-input::-webkit-outer-spin-button,.stock-input::-webkit-inner-spin-button{-webkit-appearance:none;}
+
+    .status-pill{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;
+    }
+    .status-pill::before{content:'';width:6px;height:6px;border-radius:50%;}
+    .status-pill.ok{background:var(--green-pale);color:var(--green);}
+    .status-pill.ok::before{background:var(--green);}
+    .status-pill.low{background:var(--amber-pale);color:var(--amber);}
+    .status-pill.low::before{background:var(--amber);}
+    .status-pill.out{background:var(--red-pale);color:var(--red);}
+    .status-pill.out::before{background:var(--red);}
+
+    .row-save-btn{
+      background:var(--blue-pale);color:var(--blue-dark);border:1px solid var(--blue-muted);
+      border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;font-weight:600;
+      cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;
+    }
+    .row-save-btn:hover{background:#d0e6f9;}
+
+    /* ORDERS */
+    .orders-filters{display:flex;gap:0.6rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+    .filter-btn{
+      padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;
+      border:1.5px solid var(--border);background:#fff;color:var(--text-muted);
+      cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;
+    }
+    .filter-btn:hover{border-color:var(--blue-light);color:var(--blue-light);}
+    .filter-btn.active{background:var(--blue-dark);color:#fff;border-color:var(--blue-dark);}
+
+    .order-card{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);
+      padding:1.25rem 1.5rem;margin-bottom:0.85rem;
+      box-shadow:0 1px 4px rgba(4,44,83,0.04);
+      transition:box-shadow .2s;
+    }
+    .order-card:hover{box-shadow:0 4px 16px rgba(4,44,83,0.08);}
+    .order-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;}
+    .order-id-wrap{display:flex;align-items:center;gap:10px;}
+    .order-id{font-size:13px;font-weight:700;color:var(--blue-dark);font-family:monospace;}
+    .order-client{font-size:13px;color:var(--text-muted);}
+    .order-date{font-size:11px;color:var(--text-muted);margin-top:2px;}
+    .order-status-sel{
+      padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);
+      font-size:12px;font-weight:600;font-family:'Inter',sans-serif;
+      cursor:pointer;background:#fff;color:var(--blue-dark);outline:none;
+      transition:border-color .2s;
+    }
+    .order-status-sel:focus{border-color:var(--blue-light);}
+    .order-body{margin-top:0.85rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
+    .order-items{font-size:13px;color:var(--text-muted);}
+    .order-total{font-size:16px;font-weight:700;color:var(--blue-dark);}
+    .order-actions{display:flex;gap:0.5rem;margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid var(--border);}
+    .order-action-btn{
+      padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;
+      cursor:pointer;font-family:'Inter',sans-serif;border:1.5px solid var(--border);
+      background:#fff;color:var(--text-muted);transition:all .15s;
+    }
+    .order-action-btn:hover{border-color:var(--blue-light);color:var(--blue-light);}
+    .order-action-btn.primary{background:var(--blue-dark);color:#fff;border-color:var(--blue-dark);}
+    .order-action-btn.primary:hover{background:var(--blue-mid);}
+
+    /* ALERT BANNER */
+    .alert-banner{
+      display:flex;align-items:center;gap:12px;
+      background:var(--amber-pale);border:1px solid #ffcc02;
+      border-radius:var(--radius-md);padding:1rem 1.25rem;margin-bottom:1.5rem;
+    }
+    .alert-banner svg{width:18px;height:18px;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+    .alert-banner p{font-size:13px;color:var(--amber);font-weight:500;}
+
+    /* TOAST */
+    .toast{
+      position:fixed;bottom:1.5rem;right:1.5rem;
+      background:var(--blue-dark);color:#fff;
+      padding:12px 22px;border-radius:30px;
+      font-size:13px;font-weight:500;z-index:999;
+      opacity:0;transform:translateY(12px);
+      transition:opacity .3s,transform .3s;pointer-events:none;
+    }
+    .toast.show{opacity:1;transform:translateY(0);}
+
+    /* RESPONSIVE */
+    @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.dash-row{grid-template-columns:1fr}}
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);transition:transform .3s}
+      .sidebar.open{transform:translateX(0)}
+      .main{margin-left:0}
+      .page{padding:1.25rem}
+      .kpi-grid{grid-template-columns:1fr 1fr}
+      .login-left{display:none}
+      .login-right{width:100%}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════ LOGIN ════════ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-left">
+    <div class="login-left-content">
+      <div class="login-brand">
+        <div class="login-brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+        </div>
+        <div>
+          <div class="login-brand-name">TiticacaTrout</div>
+          <div class="login-brand-sub">Panel Proveedor</div>
+        </div>
+      </div>
+      <h1>Panel de <em>gestión</em> de proveedores</h1>
+      <p>Controla tu inventario, gestiona órdenes y visualiza el rendimiento de tu negocio en tiempo real.</p>
+      <div class="login-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Dashboard con métricas de ventas</span></div>
+      <div class="login-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Control de inventario en tiempo real</span></div>
+      <div class="login-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Gestión y seguimiento de pedidos</span></div>
+      <div class="login-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Alertas automáticas de stock bajo</span></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-form-wrap">
+      <h2>Bienvenido</h2>
+      <p>Ingresa con tus credenciales para acceder al panel.</p>
+      <div class="fg">
+        <label>Usuario</label>
+        <input type="text" id="l-user" placeholder="tu.usuario@titicacatrout.bo" autocomplete="username"/>
+      </div>
+      <div class="fg">
+        <label>Contraseña</label>
+        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') doLogin()"/>
+      </div>
+      <button class="login-btn" onclick="doLogin()">Ingresar al panel →</button>
+      <div class="login-error" id="l-error">Usuario o contraseña incorrectos.</div>
+      <div class="login-hint">
+        <strong>Demo:</strong><br/>
+        admin@titicacatrout.bo / Titicaca2025<br/>
+        ventas@titicacatrout.bo / Ventas2025
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ APP ════════ -->
+<div class="app" id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div>
+        <div class="sidebar-logo-text">TiticacaTrout</div>
+        <div class="sidebar-logo-sub">Panel Proveedor</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+
+      <div class="nav-section-label">Operaciones</div>
+      <div class="nav-item" onclick="showPage('inventario',this)">
+        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Inventario
+      </div>
+      <div class="nav-item" onclick="showPage('pedidos',this)" id="nav-pedidos">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Pedidos
+        <span class="badge" id="pending-badge">2</span>
+      </div>
+
+      <div class="nav-section-label">Accesos</div>
+      <div class="nav-item" onclick="window.open('index.html','_blank')">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Sitio web
+      </div>
+      <div class="nav-item" onclick="window.open('catalogo.html','_blank')">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Catálogo
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar" id="user-avatar">A</div>
+        <div>
+          <div class="user-name" id="user-name-display">Administrador</div>
+          <div class="user-role">Proveedor</div>
+        </div>
+      </div>
+      <div class="logout-link" onclick="doLogout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="topbar-date"></span>
+        <span class="topbar-badge">SENASAG Certificado</span>
+      </div>
+    </div>
+
+    <!-- ── DASHBOARD ── -->
+    <div class="page active" id="page-dashboard">
+      <div style="padding:2rem">
+
+        <div class="kpi-grid">
+          <div class="kpi-card blue">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="kpi-val">Bs. 12.840</div>
+            <div class="kpi-label">Ventas este mes</div>
+            <div class="kpi-trend up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>+18% vs. mes anterior</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+            <div class="kpi-val">37</div>
+            <div class="kpi-label">Pedidos este mes</div>
+            <div class="kpi-trend up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>+5 vs. mes anterior</div>
+          </div>
+          <div class="kpi-card amber">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="kpi-val">24</div>
+            <div class="kpi-label">Clientes activos</div>
+            <div class="kpi-trend up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>+3 nuevos este mes</div>
+          </div>
+          <div class="kpi-card red">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="kpi-val">2</div>
+            <div class="kpi-label">Stock bajo / agotado</div>
+            <div class="kpi-trend down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>Requiere atención</div>
+          </div>
+        </div>
+
+        <div class="dash-row">
+          <!-- BAR CHART -->
+          <div class="card">
+            <div class="card-title">Ventas mensuales (Bs.) <span>Ene – Jun 2025</span></div>
+            <div class="bar-chart" id="bar-chart"></div>
+            <div style="display:flex;gap:1.5rem;margin-top:1rem">
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)">
+                <div style="width:12px;height:12px;border-radius:2px;background:var(--blue-light)"></div>Mes normal
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)">
+                <div style="width:12px;height:12px;border-radius:2px;background:#5DCAA5"></div>Mes actual
+              </div>
+            </div>
+          </div>
+
+          <!-- DONUT -->
+          <div class="card">
+            <div class="card-title">Productos más vendidos</div>
+            <div class="donut-wrap">
+              <svg class="donut-svg" viewBox="0 0 120 120" id="donut-svg"></svg>
+              <div class="donut-legend" id="donut-legend"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT ORDERS -->
+        <div class="card">
+          <div class="card-title">Pedidos recientes <span><a href="#" onclick="showPage('pedidos',document.querySelector('[onclick*=pedidos]'));return false;" style="color:var(--blue-light);text-decoration:none;font-weight:600;">Ver todos →</a></span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Estado</th></tr></thead>
+              <tbody id="recent-orders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── INVENTARIO ── -->
+    <div class="page" id="page-inventario">
+      <div style="padding:2rem">
+        <div class="alert-banner" id="stock-alert" style="display:none">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <p id="stock-alert-text">Hay productos con stock bajo o agotado.</p>
+        </div>
+        <div class="card">
+          <div class="inv-header">
+            <input class="inv-search" type="text" placeholder="🔍  Buscar producto..." oninput="filterInventory(this.value)"/>
+            <button class="save-all-btn" onclick="saveAllStock()">💾 Guardar todo</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Categoría</th>
+                  <th>Stock (kg / unid.)</th>
+                  <th>Precio Bs.</th>
+                  <th>Estado</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="inv-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PEDIDOS ── -->
+    <div class="page" id="page-pedidos">
+      <div style="padding:2rem">
+        <div class="orders-filters">
+          <button class="filter-btn active" onclick="filterOrders('all',this)">Todos</button>
+          <button class="filter-btn" onclick="filterOrders('pendiente',this)">⏳ Pendientes</button>
+          <button class="filter-btn" onclick="filterOrders('en_camino',this)">🚛 En camino</button>
+          <button class="filter-btn" onclick="filterOrders('entregado',this)">✅ Entregados</button>
+          <button class="filter-btn" onclick="filterOrders('cancelado',this)">❌ Cancelados</button>
+        </div>
+        <div id="orders-list"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════
+   DATA
+══════════════════════════════════════ */
+const CREDS = [
+  { user:'admin@titicacatrout.bo',  pass:'Titicaca2025', name:'Administrador', role:'Admin' },
+  { user:'ventas@titicacatrout.bo', pass:'Ventas2025',   name:'Equipo Ventas', role:'Ventas' }
+];
+
+let inventario = [
+  { id:1, nombre:'Trucha entera fresca',      cat:'Fresca',    dotCls:'fresh',    stock:280, precio:45 },
+  { id:2, nombre:'Filete fresco sin espinas', cat:'Fresca',    dotCls:'fresh',    stock:150, precio:55 },
+  { id:3, nombre:'Trucha ahumada en frío',    cat:'Ahumada',   dotCls:'smoked',   stock:30,  precio:65 },
+  { id:4, nombre:'Trucha eviscerada entera',  cat:'Fresca',    dotCls:'fresh',    stock:120, precio:38 },
+  { id:5, nombre:'Filete marinado al limón',  cat:'Marinado',  dotCls:'marinated',stock:45,  precio:62 },
+  { id:6, nombre:'Medallones congelados',     cat:'Congelado', dotCls:'frozen',   stock:0,   precio:78 },
+];
+
+let pedidos = [
+  { id:'#TT-0045', cliente:'Rest. Altiplanico',   items:'20 kg Trucha entera fresca',       total:900,  estado:'pendiente',  fecha:'14 Jun 2025' },
+  { id:'#TT-0044', cliente:'Hotel Copacabana',     items:'8 kg Trucha ahumada en frío',      total:520,  estado:'pendiente',  fecha:'13 Jun 2025' },
+  { id:'#TT-0043', cliente:'Supermercado Norte',   items:'50 kg Filete fresco sin espinas',  total:2750, estado:'en_camino',  fecha:'12 Jun 2025' },
+  { id:'#TT-0042', cliente:'Rest. La Cabaña',      items:'12 kg Medallones congelados',      total:936,  estado:'en_camino',  fecha:'11 Jun 2025' },
+  { id:'#TT-0041', cliente:'Tienda Gourmet Sopocachi', items:'6 kg Trucha ahumada + 4 kg Filete marinado', total:638, estado:'entregado', fecha:'10 Jun 2025' },
+  { id:'#TT-0040', cliente:'Restaurante El Lago',  items:'30 kg Trucha eviscerada entera',   total:1140, estado:'entregado',  fecha:'9 Jun 2025'  },
+  { id:'#TT-0039', cliente:'Catering Andino',      items:'10 kg Filete marinado al limón',   total:620,  estado:'cancelado',  fecha:'8 Jun 2025'  },
+];
+
+const ventas = [
+  { mes:'Ene', val:6200 },
+  { mes:'Feb', val:7800 },
+  { mes:'Mar', val:9100 },
+  { mes:'Abr', val:8400 },
+  { mes:'May', val:11200 },
+  { mes:'Jun', val:12840, current:true },
+];
+
+const donutData = [
+  { name:'Filete fresco',   pct:35, color:'#185FA5' },
+  { name:'Trucha entera',   pct:28, color:'#0C447C' },
+  { name:'Trucha eviscerada',pct:18, color:'#5DCAA5' },
+  { name:'Ahumada en frío', pct:12, color:'#85B7EB' },
+  { name:'Otros',           pct:7,  color:'#B5D4F4' },
+];
+
+/* ══════════════════════════════════════
+   LOGIN
+══════════════════════════════════════ */
+function doLogin() {
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value;
+  const match = CREDS.find(c => c.user===u && c.pass===p);
+  if (!match) { document.getElementById('l-error').style.display='block'; return; }
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('user-name-display').textContent = match.name;
+  document.getElementById('user-avatar').textContent = match.name[0];
+  setDate();
+  renderDashboard();
+  renderInventario();
+  renderPedidos();
+}
+function doLogout() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('l-pass').value='';
+  document.getElementById('l-error').style.display='none';
+}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+const titles = { dashboard:'Dashboard', inventario:'Inventario', pedidos:'Gestión de Pedidos' };
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('page-title').textContent = titles[id]||id;
+}
+
+function setDate() {
+  const d = new Date();
+  document.getElementById('topbar-date').textContent =
+    d.toLocaleDateString('es-BO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+
+/* ══════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════ */
+function renderDashboard() {
+  renderBarChart();
+  renderDonut();
+  renderRecentOrders();
+}
+
+function renderBarChart() {
+  const max = Math.max(...ventas.map(v=>v.val));
+  document.getElementById('bar-chart').innerHTML = ventas.map(v => `
+    <div class="bar-col">
+      <div class="bar-val">Bs.${(v.val/1000).toFixed(1)}k</div>
+      <div class="bar-fill-wrap">
+        <div class="bar-fill ${v.current?'highlight':''}" style="height:${Math.round(v.val/max*100)}%"></div>
+      </div>
+      <div class="bar-label">${v.mes}</div>
+    </div>`).join('');
+}
+
+function renderDonut() {
+  const cx=60,cy=60,r=48,stroke=18;
+  const circ=2*Math.PI*r;
+  let offset=0;
+  let paths='';
+  donutData.forEach(d=>{
+    const len=circ*d.pct/100;
+    paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.color}"
+      stroke-width="${stroke}" stroke-dasharray="${len} ${circ-len}"
+      stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset+=len;
+  });
+  document.getElementById('donut-svg').innerHTML = paths +
+    `<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="13" font-weight="700" fill="#042C53">Top</text>
+     <text x="${cx}" y="${cy+12}" text-anchor="middle" font-size="11" fill="#5f6e80">ventas</text>`;
+  document.getElementById('donut-legend').innerHTML = donutData.map(d=>
+    `<div class="donut-item">
+      <div class="donut-dot" style="background:${d.color}"></div>
+      <span class="donut-item-name">${d.name}</span>
+      <span class="donut-item-pct">${d.pct}%</span>
+    </div>`).join('');
+}
+
+function renderRecentOrders() {
+  const estados = {
+    pendiente: '<span style="color:#e65100;font-weight:600;font-size:12px">⏳ Pendiente</span>',
+    en_camino: '<span style="color:#0288d1;font-weight:600;font-size:12px">🚛 En camino</span>',
+    entregado: '<span style="color:#2e7d32;font-weight:600;font-size:12px">✅ Entregado</span>',
+    cancelado: '<span style="color:#c62828;font-weight:600;font-size:12px">❌ Cancelado</span>',
+  };
+  document.getElementById('recent-orders-tbody').innerHTML = pedidos.slice(0,5).map(p=>`
+    <tr>
+      <td><strong style="font-family:monospace">${p.id}</strong></td>
+      <td>${p.cliente}</td>
+      <td style="color:var(--text-muted)">${p.items}</td>
+      <td><strong>Bs. ${p.total.toLocaleString()}</strong></td>
+      <td>${estados[p.estado]||p.estado}</td>
+    </tr>`).join('');
+}
+
+/* ══════════════════════════════════════
+   INVENTARIO
+══════════════════════════════════════ */
+function stockStatus(s) {
+  if(s===0) return {cls:'out',txt:'Agotado'};
+  if(s<50)  return {cls:'low',txt:'Stock bajo'};
+  return {cls:'ok',txt:'Disponible'};
+}
+
+function renderInventario(filter='') {
+  const data = filter
+    ? inventario.filter(p=>p.nombre.toLowerCase().includes(filter.toLowerCase()))
+    : inventario;
+  const low = inventario.filter(p=>p.stock<50);
+  const alertEl = document.getElementById('stock-alert');
+  if(low.length) {
+    alertEl.style.display='flex';
+    document.getElementById('stock-alert-text').textContent =
+      `${low.length} producto(s) con stock bajo o agotado: ${low.map(p=>p.nombre).join(', ')}.`;
+  } else { alertEl.style.display='none'; }
+
+  document.getElementById('inv-tbody').innerHTML = data.map(p=>{
+    const s=stockStatus(p.stock);
+    return `<tr id="inv-row-${p.id}">
+      <td><div class="product-cell"><div class="product-dot ${p.dotCls}"></div><span>${p.nombre}</span></div></td>
+      <td style="color:var(--text-muted)">${p.cat}</td>
+      <td><input class="stock-input" type="number" id="stock-${p.id}" value="${p.stock}" min="0" max="9999"/></td>
+      <td>Bs. ${p.precio}</td>
+      <td><span class="status-pill ${s.cls}" id="pill-${p.id}">${s.txt}</span></td>
+      <td><button class="row-save-btn" onclick="saveRow(${p.id})">Guardar</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterInventory(v) { renderInventario(v); }
+
+function saveRow(id) {
+  const val = parseInt(document.getElementById('stock-'+id).value)||0;
+  const item = inventario.find(p=>p.id===id);
+  item.stock=val;
+  const s=stockStatus(val);
+  const pill=document.getElementById('pill-'+id);
+  pill.className='status-pill '+s.cls;
+  pill.textContent=s.txt;
+  showToast(`✔ Guardado: ${item.nombre} — ${val} unidades`);
+}
+
+function saveAllStock() {
+  inventario.forEach(p=>{
+    const el=document.getElementById('stock-'+p.id);
+    if(el) p.stock=parseInt(el.value)||0;
+  });
+  renderInventario();
+  showToast('✔ Todo el inventario actualizado');
+}
+
+/* ══════════════════════════════════════
+   PEDIDOS
+══════════════════════════════════════ */
+let currentFilter='all';
+function filterOrders(f,btn) {
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPedidos();
+}
+
+function renderPedidos() {
+  const data = currentFilter==='all' ? pedidos : pedidos.filter(p=>p.estado===currentFilter);
+  const pending = pedidos.filter(p=>p.estado==='pendiente').length;
+  const badge=document.getElementById('pending-badge');
+  badge.textContent=pending;
+  badge.style.display=pending?'inline':'none';
+
+  if(!data.length) {
+    document.getElementById('orders-list').innerHTML=
+      '<div style="text-align:center;padding:3rem;color:var(--text-muted)">No hay pedidos en esta categoría.</div>';
+    return;
+  }
+  document.getElementById('orders-list').innerHTML = data.map((p,i)=>`
+    <div class="order-card" id="ocard-${p.id.replace('#','')}">
+      <div class="order-top">
+        <div>
+          <div class="order-id-wrap">
+            <span class="order-id">${p.id}</span>
+            <span class="order-client">${p.cliente}</span>
+          </div>
+          <div class="order-date">${p.fecha}</div>
+        </div>
+        <select class="order-status-sel" onchange="changeOrderStatus('${p.id}',this.value)">
+          <option value="pendiente"  ${p.estado==='pendiente' ?'selected':''}>⏳ Pendiente</option>
+          <option value="en_camino"  ${p.estado==='en_camino' ?'selected':''}>🚛 En camino</option>
+          <option value="entregado"  ${p.estado==='entregado' ?'selected':''}>✅ Entregado</option>
+          <option value="cancelado"  ${p.estado==='cancelado' ?'selected':''}>❌ Cancelado</option>
+        </select>
+      </div>
+      <div class="order-body">
+        <span class="order-items">${p.items}</span>
+        <span class="order-total">Bs. ${p.total.toLocaleString()}</span>
+      </div>
+      <div class="order-actions">
+        <button class="order-action-btn" onclick="copyOrder('${p.id}')">📋 Copiar detalle</button>
+        <button class="order-action-btn primary" onclick="whatsappOrder('${p.id}')">💬 WhatsApp cliente</button>
+      </div>
+    </div>`).join('');
+}
+
+function changeOrderStatus(id,val) {
+  const p=pedidos.find(x=>x.id===id);
+  if(p) { p.estado=val; showToast(`Pedido ${id} → ${val}`); }
+  const pending=pedidos.filter(p=>p.estado==='pendiente').length;
+  const badge=document.getElementById('pending-badge');
+  badge.textContent=pending; badge.style.display=pending?'inline':'none';
+}
+
+function copyOrder(id) {
+  const p=pedidos.find(x=>x.id===id);
+  if(!p) return;
+  const txt=`Pedido ${p.id}\nCliente: ${p.cliente}\nProductos: ${p.items}\nTotal: Bs. ${p.total}\nEstado: ${p.estado}\nFecha: ${p.fecha}`;
+  navigator.clipboard?.writeText(txt).then(()=>showToast('✔ Detalle copiado al portapapeles'));
+}
+
+function whatsappOrder(id) {
+  const p=pedidos.find(x=>x.id===id);
+  if(!p) return;
+  const msg=encodeURIComponent(`Hola, le confirmo su pedido *${p.id}*:\n${p.items}\nTotal: *Bs. ${p.total}*\nEstado: ${p.estado}\n\nGracias por elegir TiticacaTrout 🐟`);
+  window.open(`https://wa.me/?text=${msg}`,'_blank');
+}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+let toastTimer;
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>
