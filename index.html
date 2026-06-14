@@ -210,19 +210,6 @@
     .hero-stat-num   { font-size: 28px; font-weight: 600; color: #fff; }
     .hero-stat-label { font-size: 11px; color: #85B7EB; margin-top: 2px; }
 
-    /*
-      IMAGEN FLOTANTE HERO
-      Trucha arcoíris fresca en presentación gastronómica
-      Fuente: Unsplash – libre uso comercial, sin marca
-      Para reemplazar: src="img/trucha-plato.jpg"
-    */
-    .hero-float-img {
-      position: absolute; right: 4%; bottom: 0; z-index: 2;
-      width: 400px; height: 420px;
-      object-fit: cover; object-position: center;
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      box-shadow: -12px 0 50px rgba(4,44,83,0.45);
-    }
 
     /* ── BANDA IMAGEN ── */
     /*
@@ -821,18 +808,7 @@
     </div>
   </div>
 
-  <!--
-    IMAGEN FLOTANTE HERO
-    Trucha arcoíris fresca en presentación premium
-    Fuente: Unsplash – foto de Eiliv Aceron, libre uso comercial, sin marca
-    Para reemplazar con foto propia: src="img/trucha-plato.jpg"
-  -->
-  <img
-    class="hero-float-img"
-    src="trucha-plato.png"
-    alt="Trucha arcoíris del Lago Titicaca lista para tu negocio"
-    loading="lazy"
-  />
+
 </section>
 
 
@@ -1713,6 +1689,139 @@
           <span class="mini-bar-val">${p.pct}%</span>
         </div>`).join('');
   }
+  /* ════════════════════════════════════
+     REGISTRO DE INTERACCIONES — CONSOLA
+     Abre F12 → Console para ver eventos
+  ════════════════════════════════════ */
+
+  // Estilo visual para los logs
+  const LOG = {
+    evento:  (msg) => console.log(`%c⚡ EVENTO     %c${msg}`, 'background:#042C53;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#042C53;font-weight:600'),
+    usuario: (msg) => console.log(`%c👤 USUARIO    %c${msg}`, 'background:#185FA5;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#185FA5;font-weight:600'),
+    chat:    (msg) => console.log(`%c💬 CHATBOT    %c${msg}`, 'background:#2e7d32;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#2e7d32;font-weight:600'),
+    nav:     (msg) => console.log(`%c🧭 NAVEGACIÓN %c${msg}`, 'background:#6a1b9a;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#6a1b9a;font-weight:600'),
+    form:    (msg) => console.log(`%c📋 FORMULARIO %c${msg}`, 'background:#e65100;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#e65100;font-weight:600'),
+    sistema: (msg) => console.log(`%c🔧 SISTEMA    %c${msg}`, 'background:#37474f;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#37474f;font-weight:600'),
+  };
+
+  // ── Inicio de página ──
+  LOG.sistema('TiticacaTrout — index.html cargado correctamente');
+  LOG.sistema(`Fecha y hora: ${new Date().toLocaleString('es-BO')}`);
+  LOG.sistema('Módulos activos: Navegación · Panel proveedor · Chatbot · Formulario de contacto');
+
+  // ── Observar clics en el menú de navegación ──
+  document.querySelectorAll('.nav-links a, .nav-cta, .nav-prov-btn').forEach(el => {
+    el.addEventListener('click', function() {
+      LOG.nav(`Clic en botón de navegación → "${this.textContent.trim()}"`);
+    });
+  });
+
+  // ── Botones del hero (CTA principales) ──
+  document.querySelectorAll('.hero-cta a, .hero-cta button').forEach(el => {
+    el.addEventListener('click', function() {
+      LOG.evento(`Clic en CTA principal → "${this.textContent.trim()}"`);
+    });
+  });
+
+  // ── Botón flotante del chatbot ──
+  const chatFab = document.getElementById('chat-fab');
+  if (chatFab) {
+    chatFab.addEventListener('click', function() {
+      const estado = document.getElementById('chat-window').classList.contains('open');
+      LOG.chat(`Chatbot ${estado ? 'abierto' : 'cerrado'} por el usuario`);
+    });
+  }
+
+  // ── Mensajes del chatbot ──
+  const chatInputEl = document.getElementById('chat-input');
+  if (chatInputEl) {
+    chatInputEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && this.value.trim()) {
+        LOG.chat(`Usuario envió mensaje: "${this.value.trim()}"`);
+      }
+    });
+  }
+  const chatSendBtn = document.querySelector('.chat-send-btn');
+  if (chatSendBtn) {
+    chatSendBtn.addEventListener('click', function() {
+      const val = document.getElementById('chat-input').value.trim();
+      if (val) LOG.chat(`Usuario envió mensaje vía botón: "${val}"`);
+    });
+  }
+
+  // ── Botones de respuesta rápida del chatbot ──
+  document.getElementById('quick-replies')?.addEventListener('click', function(e) {
+    if (e.target.classList.contains('qr-btn')) {
+      LOG.chat(`Respuesta rápida seleccionada: "${e.target.textContent}"`);
+    }
+  });
+
+  // ── Botón de WhatsApp dentro del chat ──
+  document.querySelector('.chat-wa-btn')?.addEventListener('click', function() {
+    LOG.usuario('Usuario redirigido a WhatsApp desde el chatbot');
+  });
+
+  // ── Sección "Acceso proveedor" / Panel ──
+  document.querySelector('a[href="panel.html"]')?.addEventListener('click', function() {
+    LOG.usuario('Acceso al Panel de Proveedor solicitado → redirigiendo a panel.html');
+  });
+
+  // ── Botón "Ver catálogo" ──
+  document.querySelectorAll('a[href="catalogo.html"]').forEach(el => {
+    el.addEventListener('click', function() {
+      LOG.nav('Usuario navegó al catálogo de productos → catalogo.html');
+    });
+  });
+
+  // ── Formulario de contacto / pedido (si existe en el index) ──
+  document.querySelectorAll('form').forEach((form, i) => {
+    form.addEventListener('submit', function(e) {
+      LOG.form(`Formulario #${i+1} enviado`);
+      const inputs = form.querySelectorAll('input, select, textarea');
+      inputs.forEach(inp => {
+        if (inp.name || inp.id) {
+          LOG.form(`  Campo "${inp.name || inp.id}": "${inp.value}"`);
+        }
+      });
+    });
+  });
+
+  // ── Scroll — detectar qué sección ve el usuario ──
+  const secciones = document.querySelectorAll('section[id]');
+  if (secciones.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          LOG.nav(`Usuario visualizando sección: #${entry.target.id}`);
+        }
+      });
+    }, { threshold: 0.4 });
+    secciones.forEach(s => observer.observe(s));
+  }
+
+  // ── Panel del proveedor dentro de index (si existe) ──
+  document.getElementById('prov-login-btn')?.addEventListener('click', function() {
+    const user = document.getElementById('prov-user')?.value || '';
+    LOG.usuario(`Intento de login al panel → usuario: "${user}"`);
+  });
+
+  // ── Tarjetas de productos (si hay en index) ──
+  document.querySelectorAll('.product-card, .prod-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const nombre = this.querySelector('h3, .product-name, .prod-name')?.textContent?.trim() || 'Producto';
+      LOG.evento(`Usuario hizo clic en tarjeta de producto: "${nombre}"`);
+    });
+  });
+
+  // ── Hover en testimonios ──
+  document.querySelectorAll('.rec-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      const nombre = this.querySelector('.rec-name')?.textContent?.trim() || '';
+      LOG.evento(`Usuario revisó testimonio de: "${nombre}"`);
+    });
+  });
+
+  console.log('%c\n  TiticacaTrout · Sistema de eventos activo ✓\n  Abre F12 → Console para ver todas las interacciones\n', 'color:#042C53;font-size:13px;font-weight:bold;border-left:4px solid #185FA5;padding-left:10px');
 </script>
 </body>
 </html>
