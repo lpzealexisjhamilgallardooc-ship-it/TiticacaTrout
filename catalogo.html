@@ -708,6 +708,123 @@ document.getElementById('form-overlay').addEventListener('click', function(e) {
 
 // INIT
 renderCatalog();
+  /* ════════════════════════════════════
+     REGISTRO DE INTERACCIONES — CONSOLA
+     Abre F12 → Console para ver eventos
+  ════════════════════════════════════ */
+
+  const LOG = {
+    evento:  (msg) => console.log(`%c⚡ EVENTO     %c${msg}`, 'background:#042C53;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#042C53;font-weight:600'),
+    usuario: (msg) => console.log(`%c👤 USUARIO    %c${msg}`, 'background:#185FA5;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#185FA5;font-weight:600'),
+    carrito: (msg) => console.log(`%c🛒 CARRITO    %c${msg}`, 'background:#2e7d32;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#2e7d32;font-weight:600'),
+    form:    (msg) => console.log(`%c📋 FORMULARIO %c${msg}`, 'background:#e65100;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#e65100;font-weight:600'),
+    sistema: (msg) => console.log(`%c🔧 SISTEMA    %c${msg}`, 'background:#37474f;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#37474f;font-weight:600'),
+  };
+
+  LOG.sistema('TiticacaTrout — catalogo.html cargado');
+  LOG.sistema(`Fecha y hora: ${new Date().toLocaleString('es-BO')}`);
+  LOG.sistema(`Productos disponibles en catálogo: ${PRODUCTS.length}`);
+
+  // ── Botón del carrito (FAB/nav) ──
+  document.querySelector('.cart-btn')?.addEventListener('click', function() {
+    const items = Object.values(cart);
+    const total = items.reduce((s,i) => s + i.price * i.qty, 0);
+    LOG.carrito(`Carrito abierto → ${items.length} producto(s) | Total: Bs. ${total}`);
+  });
+
+  // ── Observar clics en "Agregar al carrito" (delegación sobre el grid) ──
+  document.getElementById('catalog-grid')?.addEventListener('click', function(e) {
+    // Agregar al carrito
+    const addBtn = e.target.closest('.add-btn');
+    if (addBtn) {
+      const card = addBtn.closest('.product-card');
+      const nombre = card?.querySelector('.product-name')?.textContent?.trim() || 'Producto';
+      const precio = card?.querySelector('.product-price')?.textContent?.trim() || '';
+      const qty = card?.querySelector('.qty-num')?.value || '1';
+      LOG.carrito(`Producto agregado → "${nombre}" | Cantidad: ${qty} | ${precio}`);
+    }
+
+    // Cambio de cantidad con botones +/–
+    const qtyBtn = e.target.closest('.qty-btn');
+    if (qtyBtn) {
+      const card = qtyBtn.closest('.product-card');
+      const nombre = card?.querySelector('.product-name')?.textContent?.trim() || 'Producto';
+      const qty = card?.querySelector('.qty-num')?.value || '?';
+      const dir = qtyBtn.textContent.trim() === '+' ? 'aumentada' : 'reducida';
+      LOG.evento(`Cantidad ${dir} en "${nombre}" → nueva cantidad: ${qty}`);
+    }
+
+    // Toggle beneficios
+    const toggle = e.target.closest('.benefits-toggle');
+    if (toggle) {
+      const card = toggle.closest('.product-card');
+      const nombre = card?.querySelector('.product-name')?.textContent?.trim() || 'Producto';
+      const abierto = toggle.classList.contains('open');
+      LOG.evento(`Beneficios ${abierto ? 'expandidos' : 'colapsados'} en: "${nombre}"`);
+    }
+  });
+
+  // ── Carrito — cambio de cantidad interno ──
+  document.getElementById('cart-items')?.addEventListener('click', function(e) {
+    const btn = e.target.closest('.ci-qty-btn');
+    if (btn) {
+      const item = btn.closest('.cart-item');
+      const nombre = item?.querySelector('.ci-name')?.textContent?.trim() || '?';
+      const dir = btn.textContent.trim() === '+' ? 'aumentada' : 'reducida';
+      LOG.carrito(`Cantidad ${dir} en carrito → producto: "${nombre}"`);
+    }
+    const rem = e.target.closest('.ci-remove');
+    if (rem) {
+      const item = rem.closest('.cart-item');
+      const nombre = item?.querySelector('.ci-name')?.textContent?.trim() || '?';
+      LOG.carrito(`Producto eliminado del carrito: "${nombre}"`);
+    }
+  });
+
+  // ── Botón "Realizar pedido" ──
+  document.querySelector('.checkout-btn')?.addEventListener('click', function() {
+    const items = Object.values(cart);
+    const total = items.reduce((s,i) => s + i.price * i.qty, 0);
+    LOG.form(`Checkout iniciado → ${items.length} producto(s) | Total: Bs. ${total}`);
+    items.forEach(i => LOG.form(`  • ${i.name} x${i.qty} → Bs. ${i.price * i.qty}`));
+  });
+
+  // ── Formulario de pedido — campos ──
+  ['f-nombre','f-empresa','f-telefono','f-email','f-direccion','f-ciudad','f-notas'].forEach(id => {
+    document.getElementById(id)?.addEventListener('blur', function() {
+      if (this.value.trim()) LOG.form(`Campo completado → "${id}": "${this.value.trim()}"`);
+    });
+  });
+
+  // ── Botón confirmar pedido ──
+  document.querySelector('.submit-btn')?.addEventListener('click', function() {
+    const nombre   = document.getElementById('f-nombre')?.value?.trim() || '';
+    const email    = document.getElementById('f-email')?.value?.trim() || '';
+    const telefono = document.getElementById('f-telefono')?.value?.trim() || '';
+    const ciudad   = document.getElementById('f-ciudad')?.value || '';
+    LOG.form('Formulario de pedido enviado:');
+    LOG.form(`  Nombre:   ${nombre}`);
+    LOG.form(`  Email:    ${email}`);
+    LOG.form(`  Teléfono: ${telefono}`);
+    LOG.form(`  Ciudad:   ${ciudad}`);
+    const items = Object.values(cart);
+    LOG.carrito(`Pedido final → ${items.length} productos | Total: Bs. ${items.reduce((s,i)=>s+i.price*i.qty,0)}`);
+  });
+
+  // ── Cierre del overlay del formulario ──
+  document.getElementById('form-overlay')?.addEventListener('click', function(e) {
+    if (e.target === this) LOG.evento('Formulario de pedido cerrado por clic en overlay');
+  });
+
+  // ── Scroll — seguimiento en catálogo ──
+  window.addEventListener('scroll', function() {
+    const scrollPct = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+    if ([25, 50, 75, 100].includes(scrollPct)) {
+      LOG.evento(`Scroll al ${scrollPct}% del catálogo`);
+    }
+  }, { passive: true });
+
+  console.log('%c\n  TiticacaTrout · Catálogo · Sistema de eventos activo ✓\n  Abre F12 → Console para ver todas las interacciones\n', 'color:#042C53;font-size:13px;font-weight:bold;border-left:4px solid #185FA5;padding-left:10px');
 </script>
 </body>
 </html>

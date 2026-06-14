@@ -921,6 +921,127 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
+  /* ════════════════════════════════════
+     REGISTRO DE INTERACCIONES — CONSOLA
+     Abre F12 → Console para ver eventos
+  ════════════════════════════════════ */
+
+  const LOG = {
+    evento:  (msg) => console.log(`%c⚡ EVENTO     %c${msg}`, 'background:#042C53;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#042C53;font-weight:600'),
+    usuario: (msg) => console.log(`%c👤 USUARIO    %c${msg}`, 'background:#185FA5;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#185FA5;font-weight:600'),
+    panel:   (msg) => console.log(`%c🔧 PANEL      %c${msg}`, 'background:#2e7d32;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#2e7d32;font-weight:600'),
+    form:    (msg) => console.log(`%c📋 FORMULARIO %c${msg}`, 'background:#e65100;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#e65100;font-weight:600'),
+    inv:     (msg) => console.log(`%c📦 INVENTARIO %c${msg}`, 'background:#6a1b9a;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#6a1b9a;font-weight:600'),
+    pedido:  (msg) => console.log(`%c🛒 PEDIDO     %c${msg}`, 'background:#c62828;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#c62828;font-weight:600'),
+    sistema: (msg) => console.log(`%c🔧 SISTEMA    %c${msg}`, 'background:#37474f;color:#fff;padding:2px 8px;border-radius:3px;font-weight:bold', 'color:#37474f;font-weight:600'),
+  };
+
+  LOG.sistema('TiticacaTrout — panel.html cargado');
+  LOG.sistema(`Fecha y hora de acceso: ${new Date().toLocaleString('es-BO')}`);
+  LOG.sistema('Módulos disponibles: Login · Dashboard · Inventario · Pedidos');
+
+  // ── Login ──
+  const loginBtn = document.querySelector('.login-btn');
+  if (loginBtn) {
+    loginBtn.addEventListener('click', function() {
+      const user = document.getElementById('l-user')?.value?.trim() || '';
+      const pass = document.getElementById('l-pass')?.value ? '••••••••' : '(vacío)';
+      LOG.usuario(`Intento de inicio de sesión → usuario: "${user}" | contraseña: ${pass}`);
+    });
+  }
+
+  // ── Campos de login ──
+  document.getElementById('l-user')?.addEventListener('input', function() {
+    LOG.form(`Campo usuario actualizado: "${this.value}"`);
+  });
+  document.getElementById('l-pass')?.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      LOG.form('Usuario presionó Enter en campo contraseña → ejecutando login');
+    }
+  });
+
+  // ── Navegación del sidebar ──
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const seccion = this.textContent.trim().replace(/\s+/g,' ');
+      LOG.panel(`Navegación en panel → sección: "${seccion}"`);
+    });
+  });
+
+  // ── Dashboard — KPI cards ──
+  document.querySelectorAll('.kpi-card').forEach((card, i) => {
+    card.addEventListener('click', function() {
+      const label = this.querySelector('.kpi-label')?.textContent?.trim() || `KPI #${i+1}`;
+      const val = this.querySelector('.kpi-val')?.textContent?.trim() || '';
+      LOG.evento(`KPI seleccionado: "${label}" → valor actual: ${val}`);
+    });
+  });
+
+  // ── Inventario — guardar fila ──
+  document.getElementById('page-inventario')?.addEventListener('click', function(e) {
+    if (e.target.classList.contains('row-save-btn')) {
+      const fila = e.target.closest('tr');
+      const producto = fila?.querySelector('.product-cell span')?.textContent?.trim() || 'Producto';
+      const stockInput = fila?.querySelector('.stock-input');
+      const stock = stockInput?.value || '?';
+      LOG.inv(`Stock guardado → Producto: "${producto}" | Nuevo stock: ${stock} unidades`);
+    }
+  });
+
+  // ── Inventario — buscar ──
+  document.querySelector('.inv-search')?.addEventListener('input', function() {
+    LOG.inv(`Búsqueda en inventario: "${this.value}"`);
+  });
+
+  // ── Inventario — guardar todo ──
+  document.querySelector('.save-all-btn')?.addEventListener('click', function() {
+    LOG.inv('Guardado masivo de inventario → actualizando todos los productos');
+    inventario.forEach(p => {
+      const el = document.getElementById('stock-'+p.id);
+      if (el) LOG.inv(`  ${p.nombre}: ${el.value} unidades`);
+    });
+  });
+
+  // ── Pedidos — cambio de estado ──
+  document.getElementById('page-pedidos')?.addEventListener('change', function(e) {
+    if (e.target.classList.contains('order-status-sel')) {
+      const card = e.target.closest('.order-card');
+      const id = card?.querySelector('.order-id')?.textContent?.trim() || '?';
+      const cliente = card?.querySelector('.order-client')?.textContent?.trim() || '?';
+      LOG.pedido(`Estado de pedido actualizado → ${id} (${cliente}) → nuevo estado: "${e.target.value}"`);
+    }
+  });
+
+  // ── Pedidos — filtros ──
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      LOG.pedido(`Filtro de pedidos aplicado: "${this.textContent.trim()}"`);
+    });
+  });
+
+  // ── Pedidos — botones de acción ──
+  document.getElementById('page-pedidos')?.addEventListener('click', function(e) {
+    const btn = e.target.closest('.order-action-btn');
+    if (btn) {
+      const card = btn.closest('.order-card');
+      const id = card?.querySelector('.order-id')?.textContent?.trim() || '?';
+      LOG.pedido(`Acción en pedido ${id}: "${btn.textContent.trim()}"`);
+    }
+  });
+
+  // ── Logout ──
+  document.querySelector('.logout-link')?.addEventListener('click', function() {
+    LOG.usuario('Usuario cerró sesión del panel proveedor');
+  });
+
+  // ── Links externos ──
+  document.querySelectorAll('a[target="_blank"]').forEach(a => {
+    a.addEventListener('click', function() {
+      LOG.evento(`Enlace externo abierto → "${this.textContent.trim()}" → ${this.href}`);
+    });
+  });
+
+  console.log('%c\n  TiticacaTrout · Panel Proveedor · Sistema de eventos activo ✓\n  Abre F12 → Console para ver todas las interacciones\n', 'color:#042C53;font-size:13px;font-weight:bold;border-left:4px solid #185FA5;padding-left:10px');
 </script>
 </body>
 </html>
