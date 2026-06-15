@@ -1519,6 +1519,22 @@
     if (t) t.remove();
   }
 
+  // ── ID de sesión único por visita ──
+  const SESION_ID = 'sesion-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+
+  // ── Enviar log al servidor ──
+  async function guardarLog(tipo, mensaje, respuesta = null) {
+    try {
+      await fetch('http://localhost:3000/api/chat-log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sesionId: SESION_ID, tipo, mensaje, respuesta })
+      });
+    } catch (e) {
+      console.warn('⚠️ Servidor no disponible, log no guardado en JSON');
+    }
+  }
+
   function sendMessage(override) {
     const input = document.getElementById('chat-input');
     const text = (override !== undefined ? override : input.value).trim();
@@ -1527,6 +1543,7 @@
     document.getElementById('quick-replies').innerHTML = '';
 
     appendUserMsg(text);
+    guardarLog('usuario', text); // ← guarda pregunta del usuario
     showTyping();
 
     // Simula delay de escritura (600–900 ms)
@@ -1534,6 +1551,7 @@
       hideTyping();
       const { r, q } = getBotResponse(text);
       appendBotMsg(r);
+      guardarLog('bot', text, r); // ← guarda respuesta del bot
       setQuickReplies(q);
     }, 600 + Math.random() * 300);
   }
