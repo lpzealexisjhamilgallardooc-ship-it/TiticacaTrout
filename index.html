@@ -193,17 +193,34 @@
       padding: 13px 28px; border-radius: var(--radius-sm);
       font-size: 14px; font-weight: 600;
       border: none; cursor: pointer; text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s ease, background 0.2s;
       display: inline-flex; align-items: center; gap: 8px;
+      position: relative; overflow: hidden;
     }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .btn-primary::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,0.22); }
+    .btn-primary:hover::after { transform: translateX(100%); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
     .btn-outline {
       border: 1.5px solid rgba(255,255,255,0.4); color: #fff;
       padding: 13px 28px; border-radius: var(--radius-sm);
       font-size: 14px; font-weight: 500; background: transparent;
-      cursor: pointer; transition: background 0.2s;
+      cursor: pointer;
+      transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s ease;
+      text-decoration: none; display: inline-flex; align-items: center;
     }
-    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.75);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
     .hero-stats {
       display: flex; gap: 2.5rem; margin-top: 3.5rem; flex-wrap: wrap;
     }
@@ -249,40 +266,87 @@
     }
     .trust-card {
       background: #fff; border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 1.5rem;
-      transition: box-shadow 0.2s, transform 0.2s;
+      border-radius: var(--radius-md); padding: 1.6rem 1.5rem 1.5rem;
+      transition: box-shadow 0.35s ease, transform 0.35s cubic-bezier(.34,1.56,.64,1), border-color 0.3s;
+      position: relative; overflow: hidden; cursor: default;
     }
-    .trust-card:hover { box-shadow: 0 6px 22px rgba(4,44,83,0.09); transform: translateY(-2px); }
+    .trust-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: linear-gradient(90deg, var(--blue-light), #5DCAA5);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+    }
+    .trust-card:hover { box-shadow: 0 12px 36px rgba(4,44,83,0.13); transform: translateY(-5px); border-color: rgba(24,95,165,0.25); }
+    .trust-card:hover::after { transform: scaleX(1); }
     .trust-icon {
-      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      width: 48px; height: 48px; border-radius: var(--radius-sm);
       background: var(--blue-pale);
-      display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem;
+      transition: background 0.3s, transform 0.35s cubic-bezier(.34,1.56,.64,1);
     }
-    .trust-icon svg { width: 22px; height: 22px; stroke: var(--blue-light); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .trust-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--blue-dark); }
-    .trust-card p  { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    .trust-card:hover .trust-icon { background: var(--blue-dark); transform: scale(1.1) rotate(-4deg); }
+    .trust-icon svg { width: 22px; height: 22px; stroke: var(--blue-light); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s; }
+    .trust-card:hover .trust-icon svg { stroke: #fff; }
+    .trust-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 7px; color: var(--blue-dark); }
+    .trust-card p  { font-size: 13px; color: var(--text-muted); line-height: 1.68; }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.65s cubic-bezier(.22,1,.36,1), transform 0.65s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left  { opacity: 0; transform: translateX(-36px); transition: opacity 0.65s cubic-bezier(.22,1,.36,1), transform 0.65s cubic-bezier(.22,1,.36,1); }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(36px);  transition: opacity 0.65s cubic-bezier(.22,1,.36,1), transform 0.65s cubic-bezier(.22,1,.36,1); }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.32s; }
+    .delay-4 { transition-delay: 0.44s; }
+    .delay-5 { transition-delay: 0.56s; }
 
     /* ── MISIÓN VISIÓN ── */
     .mv-layout {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 2rem; margin-top: 2.5rem; align-items: start;
     }
-    .mv-card { border-radius: var(--radius-md); padding: 2rem; }
-    .mv-mision { background: var(--blue-dark); }
-    .mv-vision { background: var(--blue-mid); }
+    .mv-card {
+      border-radius: var(--radius-md); padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
+    }
+    .mv-card::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      transition: transform 0.5s ease;
+    }
+    .mv-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(4,44,83,0.28); }
+    .mv-card:hover::before { transform: scale(1.4); }
+    .mv-mision { background: linear-gradient(135deg, var(--blue-dark) 0%, #063660 100%); }
+    .mv-vision  { background: linear-gradient(135deg, var(--blue-mid) 0%, #0d5494 100%); }
     .mv-card .tag {
       font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
       color: #85B7EB; margin-bottom: 0.75rem; font-weight: 600;
+      display: flex; align-items: center; gap: 6px;
     }
-    .mv-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; margin-bottom: 0.75rem; }
-    .mv-card p  { font-size: 14px; color: #B5D4F4; line-height: 1.78; }
+    .mv-card .tag::before {
+      content: ''; display: inline-block; width: 18px; height: 2px;
+      background: #5DCAA5; border-radius: 2px;
+    }
+    .mv-card h3 { font-family: 'Playfair Display', serif; font-size: 21px; color: #fff; margin-bottom: 0.85rem; line-height: 1.3; }
+    .mv-card p  { font-size: 14px; color: #B5D4F4; line-height: 1.82; }
     .valores-row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 1.5rem; }
     .valor-pill {
       background: #fff; border: 1px solid var(--border);
       border-radius: 30px; padding: 7px 16px;
       font-size: 12px; font-weight: 600; color: var(--blue-dark);
       display: flex; align-items: center; gap: 7px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: default;
     }
+    .valor-pill:hover { background: var(--blue-pale); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(4,44,83,0.1); }
     .valor-pill svg { width: 14px; height: 14px; stroke: var(--blue-light); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
     /* galería misión */
@@ -293,9 +357,10 @@
     .mv-gallery img {
       width: 100%; height: 185px;
       object-fit: cover; border-radius: var(--radius-md);
-      transition: transform 0.3s;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      cursor: pointer;
     }
-    .mv-gallery img:hover { transform: scale(1.02); }
+    .mv-gallery img:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(4,44,83,0.2); }
     .mv-gallery img:first-child { grid-column: span 2; height: 230px; }
 
     /* ── NUTRICIONAL ── */
@@ -306,32 +371,102 @@
     .nutri-img {
       width: 100%; height: 360px; object-fit: cover;
       border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(4,44,83,0.22);
+      transform: scale(0.97) translateY(18px);
+      opacity: 0;
+      transition: transform 0.8s cubic-bezier(.22,1,.36,1), opacity 0.8s ease, box-shadow 0.4s;
+    }
+    .nutri-img.img-visible {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    .nutri-img:hover {
+      box-shadow: 0 28px 60px rgba(4,44,83,0.32);
+      transform: scale(1.02) translateY(-4px);
     }
     .nutri-visual {
-      background: var(--blue-dark); border-radius: var(--radius-md); padding: 1.75rem;
+      background: linear-gradient(145deg, var(--blue-dark) 0%, #052f5a 100%);
+      border-radius: var(--radius-md); padding: 1.75rem;
+      box-shadow: 0 8px 32px rgba(4,44,83,0.18);
     }
-    .nutri-title { font-size: 13px; color: #85B7EB; margin-bottom: 1.5rem; font-weight: 600; }
-    .nutri-bars { display: flex; flex-direction: column; gap: 16px; }
-    .nutri-bar-row { display: flex; flex-direction: column; gap: 6px; }
-    .nutri-bar-label { display: flex; justify-content: space-between; }
-    .nutri-bar-label span:first-child { font-size: 13px; color: #B5D4F4; }
-    .nutri-bar-label span:last-child  { font-size: 13px; font-weight: 600; color: #fff; }
-    .bar-bg   { background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; }
-    .bar-fill { height: 6px; border-radius: 4px; }
+    .nutri-title { font-size: 13px; color: #85B7EB; margin-bottom: 1.5rem; font-weight: 600; letter-spacing: 0.04em; }
+    .nutri-bars { display: flex; flex-direction: column; gap: 14px; }
+    .nutri-bar-row {
+      display: flex; flex-direction: column; gap: 7px;
+      cursor: pointer; border-radius: var(--radius-sm);
+      padding: 10px 12px; margin: 0 -12px;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .nutri-bar-row:hover { background: rgba(255,255,255,0.06); }
+    .nutri-bar-row.active { background: rgba(255,255,255,0.09); }
+    .nutri-bar-label { display: flex; justify-content: space-between; align-items: center; }
+    .nutri-bar-label span:first-child {
+      font-size: 13px; color: #B5D4F4; display: flex; align-items: center; gap: 7px;
+      font-weight: 500;
+    }
+    .nutri-bar-label span:first-child::before {
+      content: ''; display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; background: currentColor; flex-shrink: 0;
+    }
+    .nutri-bar-label span:last-child  { font-size: 13px; font-weight: 700; color: #fff; }
+    .bar-bg   { background: rgba(255,255,255,0.1); border-radius: 4px; height: 7px; overflow: hidden; }
+    .bar-fill {
+      height: 7px; border-radius: 4px; width: 0;
+      transition: width 1.1s cubic-bezier(.22,1,.36,1);
+    }
+    /* expand info panel */
+    .nutri-info-panel {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(.22,1,.36,1), opacity 0.3s ease, margin-top 0.3s ease;
+      opacity: 0; margin-top: 0;
+    }
+    .nutri-bar-row.active .nutri-info-panel {
+      max-height: 200px; opacity: 1; margin-top: 10px;
+    }
+    .nutri-info-inner {
+      background: rgba(255,255,255,0.07);
+      border-left: 3px solid var(--panel-color, #378ADD);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 10px 14px;
+    }
+    .nutri-info-inner h5 {
+      font-size: 12px; font-weight: 700; color: #fff;
+      margin-bottom: 5px; letter-spacing: 0.02em;
+    }
+    .nutri-info-inner ul {
+      list-style: none; display: flex; flex-direction: column; gap: 4px;
+    }
+    .nutri-info-inner ul li {
+      font-size: 12px; color: #B5D4F4; line-height: 1.5;
+      display: flex; align-items: flex-start; gap: 6px;
+    }
+    .nutri-info-inner ul li::before {
+      content: '✓'; color: #5DCAA5; font-size: 11px; font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .nutri-hint {
+      font-size: 11px; color: rgba(133,183,235,0.6);
+      text-align: center; margin-bottom: 0.75rem;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .nutri-hint svg { width: 13px; height: 13px; stroke: #5DCAA5; fill: none; stroke-width: 2; }
     .nutri-facts {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 0.75rem; margin-top: 1.5rem;
     }
     .nutri-fact {
-      background: #fff; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
       border-radius: var(--radius-sm); padding: 0.9rem 1rem;
+      transition: background 0.2s, transform 0.2s;
     }
-    .nutri-fact-val   { font-size: 22px; font-weight: 600; color: var(--blue-light); }
-    .nutri-fact-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .nutri-fact:hover { background: rgba(255,255,255,0.11); transform: translateY(-2px); }
+    .nutri-fact-val   { font-size: 22px; font-weight: 700; color: #5DCAA5; }
+    .nutri-fact-label { font-size: 11px; color: #85B7EB; margin-top: 2px; }
     .nutri-note { font-size: 12px; color: var(--text-muted); margin-top: 1rem; line-height: 1.7; }
 
     /* ── CADENA DE FRÍO ── */
-    .cold-section { background: var(--blue-dark); padding: 5rem 2.5rem; }
+    .cold-section { background: linear-gradient(160deg, var(--blue-dark) 0%, #052f5a 100%); padding: 5rem 2.5rem; }
     .cold-section .section-tag  { color: #85B7EB; }
     .cold-section .section-title{ color: #fff; }
     .cold-section .section-sub  { color: #B5D4F4; }
@@ -342,40 +477,100 @@
     .cold-step { flex: 1; min-width: 140px; text-align: center; position: relative; }
     .cold-step:not(:last-child)::after {
       content: ''; position: absolute; top: 28px; right: -14px;
-      width: 28px; height: 2px; background: rgba(181,212,244,0.3); z-index: 1;
+      width: 28px; height: 2px;
+      background: linear-gradient(90deg, rgba(181,212,244,0.5), rgba(181,212,244,0.1));
+      z-index: 1;
     }
     .cold-step-icon {
       width: 56px; height: 56px; border-radius: 50%;
       background: rgba(255,255,255,0.07);
       border: 1.5px solid rgba(133,183,235,0.35);
       display: flex; align-items: center; justify-content: center; margin: 0 auto 0.9rem;
+      transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
     }
-    .cold-step-icon svg { width: 24px; height: 24px; stroke: #85B7EB; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .cold-step h4  { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .cold-step:hover .cold-step-icon {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(133,183,235,0.8);
+      transform: scale(1.15) translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+    .cold-step-icon svg { width: 24px; height: 24px; stroke: #85B7EB; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s; }
+    .cold-step:hover .cold-step-icon svg { stroke: #fff; }
+    .cold-step h4  { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; transition: color 0.2s; }
+    .cold-step:hover h4 { color: #85B7EB; }
     .cold-step p   { font-size: 11px; color: #85B7EB; line-height: 1.55; padding: 0 0.5rem; }
     .temp-badge {
       display: inline-block; background: rgba(255,255,255,0.09);
       color: #B5D4F4; font-size: 10px; font-weight: 600;
       padding: 3px 10px; border-radius: 12px; margin-top: 8px;
       border: 1px solid rgba(181,212,244,0.2);
+      transition: background 0.2s, color 0.2s;
     }
-    /* imagen camión */
-    .cold-truck-wrap {
+    .cold-step:hover .temp-badge { background: rgba(93,202,165,0.2); color: #5DCAA5; border-color: rgba(93,202,165,0.4); }
+    /* imagen camión → VIDEO PLAYER */
+    .cold-video-wrap {
       margin-top: 2.5rem; border-radius: var(--radius-lg); overflow: hidden;
-      position: relative;
+      position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      background: #000; cursor: default;
     }
-    .cold-truck-img {
-      width: 100%; height: 240px; object-fit: cover;
-      object-position: center 60%; display: block;
-      opacity: 0.82;
+    .cold-video {
+      width: 100%; height: 300px; object-fit: cover;
+      display: block; opacity: 0.92;
+      transition: opacity 0.3s, transform 8s ease;
     }
-    .cold-truck-overlay {
+    .cold-video-wrap:hover .cold-video {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+
+    /* overlay gradient + label */
+    .cold-video-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(4,44,83,0.7) 0%, transparent 60%);
-      display: flex; align-items: center; padding: 2rem;
+      background: linear-gradient(90deg, rgba(4,44,83,0.88) 0%, rgba(4,44,83,0.45) 55%, transparent 100%);
+      display: flex; align-items: center;
+      padding: 2rem 2.5rem;
     }
-    .cold-truck-label h4 { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; margin-bottom: 4px; }
-    .cold-truck-label p  { font-size: 13px; color: #B5D4F4; }
+    .cold-truck-label {
+      max-width: 400px;
+    }
+    .cold-truck-label h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 600; color: #fff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+      transform: translateX(-30px); opacity: 0;
+      transition: transform 0.7s cubic-bezier(.22,1,.36,1), opacity 0.7s ease;
+    }
+    .cold-truck-label p {
+      font-size: 13px; color: rgba(255,255,255,0.82);
+      line-height: 1.6;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+      transform: translateX(-30px); opacity: 0;
+      transition: transform 0.7s cubic-bezier(.22,1,.36,1) 0.12s, opacity 0.7s ease 0.12s;
+    }
+    .cold-video-wrap.banner-visible .cold-truck-label h4,
+    .cold-video-wrap.banner-visible .cold-truck-label p {
+      transform: translateX(0); opacity: 1;
+    }
+    .cold-badge-row {
+      display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap;
+      transform: translateX(-30px); opacity: 0;
+      transition: transform 0.7s cubic-bezier(.22,1,.36,1) 0.24s, opacity 0.7s ease 0.24s;
+    }
+    .cold-video-wrap.banner-visible .cold-badge-row {
+      transform: translateX(0); opacity: 1;
+    }
+    .cold-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.28);
+      color: #fff; font-size: 11px; font-weight: 600;
+      padding: 4px 11px; border-radius: 20px;
+      backdrop-filter: blur(4px);
+      letter-spacing: 0.04em;
+    }
+    .cold-badge span { width: 6px; height: 6px; border-radius: 50%; background: #5DCAA5; flex-shrink: 0; }
+
     .cold-info {
       display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;
     }
@@ -385,8 +580,15 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: var(--radius-sm); padding: 1rem 1.25rem;
       display: flex; align-items: center; gap: 12px;
+      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s cubic-bezier(.34,1.56,.64,1);
     }
-    .cold-info-card svg { width: 20px; height: 20px; stroke: #85B7EB; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .cold-info-card:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(133,183,235,0.4);
+      transform: translateY(-3px);
+    }
+    .cold-info-card svg { width: 20px; height: 20px; stroke: #85B7EB; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: stroke 0.2s; }
+    .cold-info-card:hover svg { stroke: #5DCAA5; }
     .cold-info-card .ci-title { font-size: 13px; font-weight: 600; color: #fff; }
     .cold-info-card .ci-sub   { font-size: 11px; color: #85B7EB; margin-top: 2px; }
 
@@ -414,47 +616,65 @@
     .rec-text  { font-size: 13px; color: var(--text-muted); line-height: 1.7; font-style: italic; }
 
     /* ── REDES SOCIALES ── */
-    .social-section { padding: 3rem 2.5rem; }
-    .social-strip {
-      max-width: 1100px; margin: 0 auto;
-      border-radius: var(--radius-lg); padding: 2.5rem 2.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 1.5rem;
-      /*
-        FONDO SOCIAL STRIP
-        Pescadores en lago, ambiente cálido
-        Fuente: Unsplash – libre uso comercial, sin marca
-        Para reemplazar: background-image: url('img/social-bg.jpg');
-      */
-      background-image: url('islas-uros.png');
-      background-size: cover; background-position: center;
-      background-color: var(--blue-dark);
-      background-blend-mode: multiply;
-      position: relative; overflow: hidden;
-    }
-    .social-strip::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(4,44,83,0.88) 0%, rgba(4,44,83,0.6) 100%);
-    }
-    .social-strip > * { position: relative; z-index: 1; }
-    .social-strip h3 {
+    .social-section { padding: 4rem 2.5rem; background: var(--bg-section); }
+    .social-inner { max-width: 1100px; margin: 0 auto; }
+    .social-header { text-align: center; margin-bottom: 2.5rem; }
+    .social-header .section-tag { justify-content: center; display: flex; }
+    .social-header h2 {
       font-family: 'Playfair Display', serif;
-      font-size: 22px; color: #fff; margin-bottom: 4px;
+      font-size: 28px; color: var(--blue-dark); margin: 0.4rem 0 0.6rem;
     }
-    .social-strip p  { color: #B5D4F4; font-size: 14px; }
-    .social-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-    .social-btn {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 20px; border-radius: var(--radius-sm);
-      font-size: 13px; font-weight: 600;
-      text-decoration: none; cursor: pointer; border: none;
-      transition: opacity 0.2s, transform 0.15s;
+    .social-header p { font-size: 14px; color: var(--text-muted); }
+
+    .social-cards { display: flex; gap: 1.1rem; flex-wrap: wrap; justify-content: center; }
+    .social-card {
+      flex: 1; min-width: 200px; max-width: 300px;
+      border-radius: var(--radius-lg); padding: 2rem 1.75rem;
+      text-decoration: none; color: #fff;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), box-shadow 0.35s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
     }
-    .social-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .social-btn svg { width: 17px; height: 17px; }
-    .fb-btn { background: #1877F2; color: #fff; }
-    .tt-btn { background: #111; color: #fff; }
-    .wa-btn { background: #25D366; color: #fff; }
+    .social-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,0.22); }
+    .social-card::before {
+      content: ''; position: absolute; top: -40px; right: -40px;
+      width: 130px; height: 130px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      transition: transform 0.5s ease;
+    }
+    .social-card:hover::before { transform: scale(1.6); }
+    .social-card::after {
+      content: ''; position: absolute; bottom: -30px; left: -30px;
+      width: 90px; height: 90px; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .sc-fb  { background: linear-gradient(135deg, #1877F2 0%, #0d5ec7 100%); }
+    .sc-tt  { background: linear-gradient(135deg, #111 0%, #333 100%); }
+    .sc-wa  { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); }
+    .social-card-icon {
+      width: 50px; height: 50px; background: rgba(255,255,255,0.15);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+      transition: background 0.3s, transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .social-card:hover .social-card-icon { background: rgba(255,255,255,0.25); transform: rotate(-8deg) scale(1.1); }
+    .social-card-icon svg { width: 24px; height: 24px; fill: #fff; }
+    .social-card-body { position: relative; z-index: 1; }
+    .social-card-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+    .social-card-desc { font-size: 12px; opacity: 0.8; line-height: 1.5; }
+    .social-card-cta {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 6px 14px; font-size: 12px; font-weight: 600;
+      margin-top: 0.5rem; position: relative; z-index: 1;
+      transition: background 0.2s;
+      width: fit-content;
+    }
+    .social-card:hover .social-card-cta { background: rgba(255,255,255,0.28); }
+    .social-card-cta svg { width: 12px; height: 12px; stroke: #fff; fill: none; stroke-width: 2.5; transition: transform 0.2s; }
+    .social-card:hover .social-card-cta svg { transform: translateX(3px); }
 
     /* ── PANEL PROVEEDOR (inline, oculto hasta login) ── */
     #prov-inline-panel {
@@ -791,7 +1011,7 @@
       <span></span>
       Proveedor certificado SENASAG · Lago Titicaca, Bolivia
     </div>
-    <h1>Trucha fresca del <em>Titicaca</em> directo a tu negocio</h1>
+    <h1>Trucha Fresca del Lago <em>Titicaca</em> directo a tu negocio</h1>
     <p>Proveemos trucha arcoíris de alta calidad a restaurantes, supermercados y distribuidores. Cadena de frío garantizada desde el lago hasta tu cocina.</p>
     <div class="hero-btns">
       <a href="catalogo.html" class="btn-primary">
@@ -835,32 +1055,32 @@
     <div class="section-title">Garantías que importan a tu negocio</div>
     <div class="section-sub">Trabajamos con estándares de inocuidad alimentaria para que puedas ofrecer a tus clientes un producto seguro y de calidad consistente.</div>
     <div class="trust-grid">
-      <div class="trust-card">
+      <div class="trust-card reveal delay-1">
         <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <h3>Certificación SENASAG</h3>
         <p>Registro sanitario vigente. Cumplimos toda la normativa boliviana de inocuidad alimentaria.</p>
       </div>
-      <div class="trust-card">
+      <div class="trust-card reveal delay-2">
         <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="12 22 12 12"/><path d="M3.3 7L12 12l8.7-5"/></svg></div>
         <h3>Trazabilidad total</h3>
         <p>Cada lote con código de origen. Sabes exactamente de qué jaula y fecha proviene tu producto.</p>
       </div>
-      <div class="trust-card">
+      <div class="trust-card reveal delay-3">
         <div class="trust-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <h3>Entrega en 24–48 h</h3>
         <p>Desde el lago hasta tu puerta en menos de 48 horas. Frescura garantizada en cada pedido.</p>
       </div>
-      <div class="trust-card">
+      <div class="trust-card reveal delay-4">
         <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
         <h3>Factura electrónica</h3>
         <p>Emitimos factura con NIT en cada compra. Tu contabilidad siempre en orden.</p>
       </div>
-      <div class="trust-card">
+      <div class="trust-card reveal delay-5">
         <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
         <h3>Crianza artesanal</h3>
         <p>Trucha criada en jaulas flotantes en el Titicaca a 3.812 m de altitud, sin antibióticos.</p>
       </div>
-      <div class="trust-card">
+      <div class="trust-card reveal" style="transition-delay:0.68s">
         <div class="trust-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <h3>Soporte B2B dedicado</h3>
         <p>Asesor comercial asignado a tu cuenta. Pedidos mínimos flexibles según tu volumen.</p>
@@ -885,24 +1105,24 @@
     <div class="section-title">Misión, visión y valores</div>
     <div class="mv-layout">
       <div>
-        <div class="mv-card mv-mision" style="margin-bottom:1.25rem;">
+        <div class="mv-card mv-mision reveal reveal-left delay-1" style="margin-bottom:1.25rem;">
           <div class="tag">Nuestra misión</div>
           <h3>Llevar lo mejor del Titicaca a cada mesa</h3>
           <p>Somos productores y distribuidores de trucha arcoíris boliviana. Conectamos las aguas únicas del lago Titicaca con negocios que valoran la calidad, la frescura y un origen transparente. Trabajamos con respeto al ecosistema y apoyo a las comunidades locales.</p>
         </div>
-        <div class="mv-card mv-vision" style="margin-bottom:1.25rem;">
+        <div class="mv-card mv-vision reveal reveal-left delay-2" style="margin-bottom:1.25rem;">
           <div class="tag">Nuestra visión</div>
           <h3>Ser el proveedor de referencia en Bolivia</h3>
           <p>Aspiramos a ser reconocidos como el proveedor B2B más confiable de productos hidrobiológicos en Bolivia, expandiendo nuestra red a todos los departamentos y siendo referente en piscicultura sostenible en la región andina.</p>
         </div>
-        <div class="valores-row">
+        <div class="valores-row reveal delay-3">
           <div class="valor-pill"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Sostenibilidad</div>
           <div class="valor-pill"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Transparencia</div>
           <div class="valor-pill"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Calidad</div>
           <div class="valor-pill"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Comunidad</div>
         </div>
       </div>
-      <div class="mv-gallery">
+      <div class="mv-gallery reveal reveal-right delay-2">
         <img
           src="titicaca-lago.png"
           alt="Vista del Lago Titicaca desde las alturas de Bolivia"
@@ -938,34 +1158,114 @@
     <div class="nutri-layout">
       <img
         class="nutri-img"
-        src="trucha-plato.png"
+        src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUSEhMVFhUXFRgVGBcYFxgYFxgYFxUYFhcYFxcaHSggGBolHRUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGxAQGy0lICUtLS0vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIALQBGAMBIgACEQEDEQH/xAAcAAAABwEBAAAAAAAAAAAAAAAAAQIDBAUGBwj/xABCEAABAwIDBAgEBAUCBQUBAAABAAIRAyEEEjEFQVFhBhMicYGRofAyscHRB0JS4RQjYnLxM4IkQ1OSsjRUY6LDFf/EABoBAAIDAQEAAAAAAAAAAAAAAAECAAMEBQb/xAAuEQACAgEDAwMDAwQDAAAAAAAAAQIRAxIhMQQTQSJRYXGxwQUy8YGRoeEVYnL/2gAMAwEAAhEDEQA/AOWISjaClZTwCoNFCJQlLjkUUd6BKEoSjKSQiQCEo8qIhQAoFBJRoBASjlEVI2dg3VqjKTBdzgO7iTyAkqNpK2Ad2bs+pXdkpgEgZidAAN580zi8M6m91N9nNMH9lt8L0c/h69J1Oo8EazEPG8HgI3X3JXSTYDaz8zHZX6TEgjmOPNcv/kod1K/S17cMTuKzEvwDxSbWIhjnFjTIkkawNYtqo9l0HE7Dpuw9Ci5zopEmRbMXazrF1h8ZhIqvZSDnta4tBAJNrXgcZWjperjntL5/tew0Z2RoT+Awpq1G0wWtLjALicsxMSAU9h9jYhxEUK0SJIpPMDedLrZjovSFIZQ9lQdoOeCHhwu0lpiBbSE3U9RHDHfz5rj6kckjIbX2FWw8Go3snR7btPKdx74VdBtY39V12qwvYabxZ7O0NQJEH1UPZuxmtoNoFznBrs7XE5Swg5gQRzm3Mhc+H6tUfWt78e3uVrLtucxZTkwAZ4an0RQOS6bWrhmZzQJzSXR2n7gCRrxVJtbYIrB1VsNqZZyACHEXJPMi3fCvx/qUZNalSfyFZEzHtKNJRhdMtAUqJSEq6hAAIGAiuhHuVCACNyQlA8lABShKMlJRIG1LhNgox4KEDKNETzQUINgFAtSLcUCoEWE+QyYaCRxcSCbcrC/eouc8kC/mlcbCpUW52UTDdHmIaHB0yCd2/koeLwT6fxtInQkao8Jji2Lm3wuGrTradRyWiBdiWkNOeTcTI9d+nNUSlPG9+CyKU+DJQgrra3R99HeCTfKJJA1lUjju3q6E4zVxK5RceQQgCncPh31HBjGOc46BoJJ7gFsdn/h5VyGrinGmAPgZD6hmwG9rbnmmeysVtLkxgpuyl+U5Zgugls8J0m4W+6J4E4UPqFwcajRAAIEC4NwDN1b1HVKIpuDMmWMoLezA3QUurXdWJc4gvceEaLhdV1ryY9NU74+DPLLapDwxXWQKjYIPcU06DrqoONxL+vp5iTlbAk3ytHw94urJzP2XMyqmmuGVWQqjwLHiJ/ZTK/STNUZToDK2QCSAJuBYeajY5tgYuPf0VI+j2pGuoWvo87xp15/A1m2pbQl0CbJmvjOucHARAj1/dZnCuqEkZnG17/VXmFqw3si547o3K7r+t7sVBcefwG/YVUBNtN3+VBxOJJJa0mNDz/ZPVqpykEC955clXNJJnQaD6lc2EfLEbHRT0J3XjiU5hao61uYB15LSQ0HlKjvxLnOy2AgwTu7glUtnAuBLswN458+V1bFqL1SCi12lsPZznBr8OGOdBJYS2CeOUx4quxn4b0XT1Vaow8HAPHpB9VJw+z2vqGZyt57+C0TMQvSdFmlmi5zVLwWqTOabQ/D/ABlO7GtrD+h0O/7XR6Ss3isM+m7LUY5juDgWn1C9CYGg5wzO7LeJ1PcFIxGHoObFSmKg3B8G/cbBWZc+KHkuhqfg82yhK7f0k6C4XE0yaLG0aoEgsAAPJwFnDTmuU7d6MYrC3q05Z/1G9pniYlv+4BTHkU1sM9imJRShKJ0KwgZKIlAIeKIA0SGTuQhQgMiNEUFCDUcx5JMHl77k4O9IPf8ANQNCQPc/dLn3H7okM3v2VAE3Y+AFaqGu7LblzrAARaSbXMDxWmfgKVFpfSc2YAu8lxzcRPI6LJUsQ5ocGugOiRxjSVo+jzHV263DsusnjB3wQbHksnUxm9729jRhcV9RvF1ardQ25mRrEHh3qsYxlR7c0htg7KBmAGsTYmOK22K6OywwSSLkTv3d6xxw+V72wRE7t/Dkq8M0g5I2dW6K/wADSaG4Y05dq4GXOI/U43nl6LRvcF5/6403dlxaZ/ZaHBdL69Nl3zEAB1xztr5Hfotnfa5W3wZXgvzudG21hOsbJeYBmDukRb0WZ/hnMMHdv48FGp9JRiAO1kMfqEGfY1SHbRNAhtd2emYgx2qYJjxbrZcLrI68zUF/syTi09yH0se4sBHxCD5LUbKxJqUWnSQCSe4fVUu0cI2q3M1wcx2hF5jhwUnYEgGkQbad0LJNrtJeU/uISsfugyOfDcq801Mr6we7wUamLlvDRVw4GscwVnRZTmOABJmO9V1BoL+5ScUCRlHxHTkN5STVyA2MYg9Y7s+XNLZh2i1QnSd0dxTlGgGCBv3ned6TVw+haDcGZ01BsnTvjgAYLZyxLSOzoZOnjdKfig1hHZa4WA3d5+yq6uPpip1LYdlaXEt/K4uEj19FHxmIA7RPv7qzsNtWOi+2VizkDXEFwJuN97FazZmBDQKtXf8ACzjzKw3RXB1ajm1XNiiXwBvIFz4blvMfiszgeAhdR9VKGPS+UasOPVuyVWxZKg18ZFyDHITH1TFWtw3o6D+0BPaOnhc+C5UpSlLc6EYpIuNn19DxG/XyUTFuLMQ9mtNzMw4NMmR4ypmEoSRmO9VXSB015BgN9wuj02SWNw/9V/h3+DPkinf0Mx0j6C0K0voRRqcAP5bjzaPh7x5Fc12rsyph39XWYWu3H8rhxadCF2Y1So+Pw1Ouw06zA9p46g8WnUHmF35JPgyqTRxNGGrQdJ+i78L229uiTZ+9pOjXgaHnoeWiz4hVliCKMDvRoSoQLzQRmOaNQlDRHEIvBHHf6JJPM++5AIJ5I5SXD3/lG1o4/L6IkDHd811vod0K6igamJzCrVDTkBjqmi4ni+9+GnEmq/CXoqKrzjazZp0nRSBmHVRq6DqGWj+r+1dP2i2WkqyONSjuVym09jAdJdrfwzHUyWmoQMl75b9ojcbEQd5CzdBhrXyl7zGh1MwLceSmdN8NOLYf10miZ/S5wPjp58k9sM9UwGBYSTqfLXXfK5PU41j3R0MMtSoyO18LkeWuaQ5riDxBBgg8YhRqzeyJJPu11e7WaXvLjq6Tae1qdDoqvE0m5d4aNeTjuNt4VkMlpAeOiuo0CbjXSApFLHucCx0va1paNxAJBm+ospODZlsLiNb/ADTZwjXPIBsBJIiICdyi/wByKJ4VIc2Jtc0XdkyyZc06H7FbrA7Qpvb1tE5v1MMWPDl3rldV8QAYMnhorHZmMfScHMdlcN5gT9CCs/U9Gsi1LkxzwuPB0jFPDu0Le7gqHXJBDhyVSzpE2o/tNyOIuW/DIGuXcSp/8QHMB3fIrlSwSxumUFjgzeeR+anihFybnXkN3jdVWxO0CdzY/fxspG08URDgY3Df4x6SqZY3ZGTs7RBbu3+54qg29tcNaQ2ZNuZ/ZEKznzYhvHSTyHD7qDjMBmHNben6FtapcexFuUezMaabiQ0dsjMYMxwF7K82Ps1+NxIZowXdyaPqdFVUMK5j5i/yXReiWFNLD9YfjqmZ35W2A87rVkqMtVF0IapUWjhl7DRDWDK0DcBYJVKgXwBrP0P7KXgGEkWV+xrKTZAExJganVV4sMcj1SZtctOyM0/Z7mODXkTlGlyJ+ql0mgCAE+6uHCTF0eGw0uEGN/HQquUIuVQLdTrcfw3ZaXnQfNY+tXNSvJ3TIvYyQAZsdJ5WV10r2o6mzLSpl8RvIBLjvLQT+o2B0VHhS+5fAlxIbGl9JFjuM8yrMOOMsirxx9fL/AOIuTJRRSiLkTRJXesxUSKdMOBa4BzXCC0iQQdQRvXMumvRQ4R3W0pNB5tvNMn8jjw4HwN9er4eknMa2i5vU18sVZYGu/NO4c7jxhM0q3Am7PPmZFCt+lWwXYPEOpOu09qm79TCbeI0PdzCqFXwWAKCAKChBZaeDfVJe7l6g/dNnuHmUhzeSVIdsVPuPtClYDCurVadGnd9R7WN11cYBPITJ5AqGKa334M7MFTHOrG4oUnPH97/AOW3/wCpqeSdK3QjdI6/gMCzD0aeHpfBTYGDnGrjzJknmU5UEhGXXRFajOc6/ELZJdTzgXpkuH9p19Y9VR4HFZmtBA7TYJ3yCOG+3zWn6bbQxLbMaGMuC8szAzAiTYC7vJYzZsj+XVPaYQ9pEFr23vOg+q5HWOMro39Naassdq4JwpktIyxcfm/2jw1WSr4txbLQ4CBYgcwTI1vF1rX441gWxDrnS2m/gqHHYKrms2XGAOZN+P8AhY+naXpkb5RfJXCo1jM2fNOrbgyQfNVwqPjs2mdYA8j4KZUwbnS4NcQ1xbawJgSR73JeA2eZuT70mVu1RirZncZN0QCYkBone75xyPJOVXSABrvmLd1pU7GUw0ZXA5jv/L4BS8Hhh1TjbQwded/RB5VVi9sqKNeBBnwiR3SrzBbYblyvB0ImPKbeqocGe07SIIJIB74nQ89UnEVb289FMmGOTZozzwxe7NZsLa0B7dS0nlJOhurDCuNWrLydJAnWOXC6x2Cxoa9jiCcmsGJaDJB3Hy3rouwMbhqwzUwGu0IIAcPHeJVMekTyWYp4nEeZgidykM2SVcUAFMZC6SxISjLYrY8EGFosjWNpsj4WN9blPV2SE1i3Wa6Pywe8WC536jHTHY19N+4dOMLAHNbmJc0QCBALgC6/AEnwT9bFyDHAqq6+1lMwFEvsNN53Ac1yscnLZGxpJCqGYwG3O4c1LxD20hMjORBI3DeAkV8TToNIaZdoXfbgsttTaoEuc6LSBeTPBU5Zu9EN35+Boq/oS6uOb1vanQgAwbNgAk8dSBG+6g4zFZXATeLiZjtGPGFR4vGh7y1hIAdOaby2CCPqFK2ZhmvzZuBOp0Gp7hIst+NrEu4/Hj5Y0o6vSXFKtm0Vlhaayex9ptY4io4ZQYzXkf3DyWjwe2aDnZGv7W4EFs9xIgrr4s0ZJbmPJikvBfYdqyXSXEdr+IuA0AA/pAOZrv7swn0VvtrGxTDAbvMf7R8X0Hiq7abc1BzIJkREz3SSsXX9Rc1iT43f4LemhS1PzsSOnuyBjMCKjQDVYwVmReZaC9o4gjTmGriHkV27Ye181GnylscAHEAHuELk/SrZ3UYutSA7IfmbwyvAe0C24OjwXT1KUVJGaqbRU24I0WXmggQMAcvNA+9ECeZ8h90Q96fdAcAnn5/suu/gjhwKGLq73VKdPwY1zv8A9FyOQuw/gk7/AITFN3iu13gaQA/8Snx/uEnwbkFKam5SmlaSgOtRa4FrgCDYgiQRzCzm1uj1BrDkpNYRcFoiPJaaVA2pollFPkaLaexyXZlY0sU/MLPFrR2hqJHHs+vBTdvYlzMpa4gwQbaHNGh0tbmpW28ExtTM9rnUycxDYBmNAdygYvZjmU+uJD6fx5gJMmxDt4PaN9O7fxM2JLI21/B18E1KKstNlmi5gpdmW67rnU96g4jZRZVDm3ncb7/TcqzZOIAqDtCSeIvNuPEyplfGmjWcSZAMTILQfp+yonCadFmlJumUnSPCnrcrW9oiSOETOvJN1MHUbTDR2gO0RpfnwUfb9cPqSHm4+ITJO8TvCnbDxIDDmJIEzJ5LY04Y4tclG7bRV7EpPfWscsGZA/TeOeiG2MKWv0OXnCLBVh18tsCS2dBdTOkRdmaNREzvPG6d33E/dCuqaKt9LKLj2UihiHtMtJB3RM8oVtg8AHtcXOvO7W3MqmLe0Wt1mJKsj7MrkvY0eB6WYqkSH1C64kPAPgbSPBdG2Ft6niGZmGHb2EguF+W7muLV2bzM7+/739VNwNZ9MtqU3QZtGoPMafdWKbXyUSxpncxXULHbSbSaXObnBMZZiTxB3WCw2y+mZy5a4OYE9poBBtvA0PdZTcTtLrg1rCyzg6S9p3ERlBJ0Ko6vJHRuHBietF4OkFHNaiTb/qECOfZTOP6YPALaTGgbwD8zF1RjBACOvpxpoToYiZ3JFKjDb1Keumlge/VcPUmvj6V9kdXt414+4vFbXrVWkGlvBDi4gQDvEDXvhV1fC4p47REWsXE6WEfJWdIvPw5X/wBIJE8rSFZN2fVdBgMMEwZNwLCU0Z6dopBelGTa6pSBlrDzzRE6CInctW0dVhMzrOe0CN4zDM6504f7Qs5WwfWVclU9rN2t3ZAnw+qu9uYjMWs3MEcrj5wr8ktaUf6lTSTtGcLuybSSc1/qPAJitjSxgaTcRB3gi4vyhXDzALJtFgIuPus9jsMalejQmJme7UxzgGPBXwim9/r/AGFs3barqtdr9wb4XMq+rPaRl/MRI3TH+fVVWEwlg0cvDd5AD0T+Lw4zsqDVoc0DdcXJ7oB8FkjJyblLyJLwl4I+yaf899MaZg/T9ckzzss7+L2EDMVSf+ugBrF2Pd9HDyW36LYOXvrnWoRHDK2zY8Flvxr/ANTC/wBlXh+qmu9gg44EmYckk8hzef7kEQHuPsjTEBlRdXzSvJJKAwfVn2V0r8DMWBXxWHm9Wi2oO+i4g+MVfRc0hW/RLbBweMoYkzlY/t86bgWVLRfsuJ7wE0XTBJWj0C6xQaU/j6YBzNMtcJBGhBuCFFBWozEgFRNotlqkNKKq2RCDCZbFUgdVQVsNUoBxbLqT7PbAJFwQ4TzEE81pMY3KYTuFAIgrNlwxyKnyaMeVwOPVWuNR5FOz3OcNPhdJDZA1EwkYrCZQHTAuSDqNPitc7l0DbnRwtqdYwfy5mGi9Mgax+ZpuTwlZbH7PdUzOpvnKRnabjN/Q4TAIixWNyeOemfBti1ONoqcfTaaOd5uTZrRw3E7uKRhsIWscXdkkWsbg6W7in2Yx5AaW24OsJEg7pAhzfNSabgSW5g57iSSTY2gBuvp6q1r00BP1WU2z2FjwXRGbWLmf0yAfNW3STIWhodfUNtbgJ4z8lBfXFN8ugvuLuBLBa5ymONpEKfTFMAOIcXEyCeJE+H18UZRt6hE1xZT9WWsAiDPCDcak6/5TNEdvv1V9VpB8GbkmZ1MG3oBZQWbMd1thvOttPpdKpe5Y47EXFURqR4zPysEnDsm4kDirPaeCyi+ulrCY0E6whs57spGZnCMpLoG+x7hvUUthJxVlYTBcD36fI7kWHquBBbMgz4i4UrF4F2ewkEjfPml1KAYCbkXbEn4gL3BEg3KKaZTKLLvC7VYRLhldwI9e5TKVbrbNE89yx9B5zWNtBmO77eK02xtrhpayoA2BDYENIHBc/P0ij6oGiHUt7SNjsjZ3VAOY0Zjv3Dv5K8AFpIJiZA5LP08dmaO0QDG70von6+1WUKLnvffQF0Wj9+HBY3F8BbctzM7WqNOMIaBJJBPIGXeFgn8bTuTMt3GPEGPLwhVmwndY6piHB01CRTEEw3QTzK0LqTmUgJEEuAaIHaAuY1yiINzJHctkcGn+iDKZS1nQ5pEFu+D2gLgET8vZc6B7O6ypiMS8SAeqZaBDQCSO85fJQNuV30RkjtvsBN72/bvlbno3gxRw1OmDJDe0R+p1z6lLlemGn3+3kD9yXRoBonfv4Ktxv815osJl4AMaNbJkzuJ08FJ2pjWtEC7psBrPLlxKsOjmzcoNR93uuT9FZ0uDuy/6ooyT0L5LnZmFDGNaNAAFyn8ZMVmxjKY/5dET3vc4n0DfNdgp27gvOvSjaf8AE4uvXHwvqHLv7Dewzza0HxXantEyR5KtBEgqhxaJwTmVId3JRxIIQJQhJeFCHbvwj6RDFYT+CqO/nYYdiTd9HRsf2WZ3ZOK1LhBgrzdsXa1XC12Yii7LUpmRwI0LXDe0iQRzXo3Yu16O0MM3FYfXSpT/ADU3gXafmDvEFaIStUUTjTsea5OgqLKcY9OIQ9rYSRmGqpMPXh0Fas3VJtXZcnO3xSteRkyQ18t8Fzeia2DrdU9zQ2pINg5rxETYy28axotnh8QW2Omk/dV+3ujLMSRUpkNqA5pNw6Q0EEbvgbfks/UYe7GjRgy9t78MyvSHZhLGPpxWNw/q4zNMSLRPJZ3OWvDnggwGEE3+EbuV10nZjK2HcW1KeY1XBsg9kuNm/wBs2ElU23uj7cQ52Xsljh22bxIkXFxIIniFz4ZJYfRNUjY2pboz1PDtqCcoc05oAIaJE9oui+s7hY2Uylgab6ecm4JbaPywGuA8vRVjqT6DupzEgXFjG8XHLj38VJ2ZUibDtTMbtIjcL79xWiT1R1RZI1dMXgsUwkEtMNJE853AX1VgOrGYAlroBAIEmTuIN9+l1Fw+AE0gy5OeYvPVv3cTpvVxtPZlR9IADtfEwxLuMjfH78VnnNalQ1PeytrYfPL82/4baA68tD3qCKmV0Ogne0boO8jx8kvFYhzWltRskA6WgRAAga34bkmgOvpirSLrAMdTMGCQBEiDBgxPoVdj3VlU9nRX4qu4HsEsEXjnxJG4oYOgKpY0gGATvuTHaOoDra8FJxpzdoiIAbprlEXF721T+A7NExbOfiJOmlmqSlSEStkLEYam0fAQWmDz7jKYa9wFxv14cNdZUra73sgbrlp0J8Nyt+jexG4pjj1h7MDIDGvE7ufegm1HUxZqPCImzNrE0w2wc0b943KixeM/iKraWYluYZnnfeTH9N7K9270eGGc5uaQA05dfjkC+u421VFsXZwc9wDgCDoTBiRIHE7k0McFc4/wCM3+1nRtiVqTQGgOORsaTlgRu0E89w4pOMq3PVyYi98rZLz8RAvos5s1jyS+nJBnsmO0SSSWzuAue5XWHwlR7i2nlyn4n6wd+U7zum/0A0ylskPaW7ZTbTo1K9Zrqd3i5JFhyjx07lpcJsXEZbPIBF2zbWRu3HhCuNmbKZSFrneVcUlqXSwa9W5Q88vBTbL6PnPnqHMeK1VJsWCZpmyPG42nh6T69Z2VjBJP0A3k6AK6EIxVR4KZScnbM7+J23/4XCGkw/za8sbGoZ/zHeRgc3BcQU7pN0gfjcS6u+wPZYz9DB8Le/eeZKgSkm7Y8VSDQQCCQYcDvevySSe5HnjefM/ZHm9wPpdKOJnkiJ5lKPMD1CIjmVCEZzuZ8YV10R6TV8BXFeiQQYFSmbMqN/S6NDrDtx5Eg0tQc/fgkDw996ZbcA55PTex9p4faFH+Iwrr6Ppn42O/S4fXQ7kRkGCvO+wtt18JWFfDvLHjWLtcP0vGjm+xBuu49E+neE2iBTqRQxWmQnsvP/xuOv8Aab9+qvjNMplCi6ZUTgekYrBPpm4txTDXpysax2zQ+7bH5qlIqUjcfbwK0jaqOpTDhcIUGypw2OY+xVbi9luphzqEuaR8IiQJkgcR6iArPFbHabtsfRQ3U61P+oeapzYlkVSRZjm4u0YfaOGzvztsaQEg2N+IN5MKwwWym1hmHYeRdzRYxpmbo7TXUK12sW1m5XiCDNxY8jvhM4Z1Jp/1erJFwR2T3O0XNyYZYncd0bY5tS9mDZuwnhzmv+I2puBkFxEE3MgmdDHwpqmSGS74h2YsWi+UwY3AelkrFYZ7vgxEt1GQXMdr47xMKXTz9ptdgDYaHVGCSLCHFpdfdJEAclnlJSLlJrkoekVQGi9v9TTOUSQJk+u9Yvo9jDTxHVF5aKnZm1iYgGdx0vxXWtu0QMKQ2nuiPisAL90x6rjG1dnhodUkyXm0WiBcHvstfTPZwkUZd/Ujd47YdRjDJbDjJOhBAneLGBca2TWAwNUCWUwWgXlptBvHM66KL0c6bg0jTr/G2Mj5N9Gwe1e3LdwWk2ZjntZkquc2oSXNOX+W5nDMAL+J1smyKKTUhIyl4MvjcKXl3ZJOrg2QOEwodN1SgQaYc0GZuQeHD5rpOEotDA5zSRE2Oa2lo0TOOwlOo0ljy02H+RMpcbfAJtPc53jNp1MzS65FwHtkaboIg7rqnrVyXBxs6+lgLz91qto4WqHAdYQXCNJmN4iRviVCxmChpFUDVrWuDTqQ7UnfAM9yuhkjwJKDW5a7C2YKjWVnvNQkSJgAbiMotuWvwhDbLK9D3RQc2Zio6PJs+sq8bVutMaXBU23yX9OqpdIqu2dRc6wEqRtrbeG2fTz4h8vI7NMXe4/0t+psrUVstatdlGm6tWcGMaJJNgFw/p900fj6mVktw7D2G73H9b+fAblD6X9MK+Pf2zkpNPYpA9kc3H8zue7cs6llLwh4x8jtJSQFHohSFUxxYCCIHvRoBAXd3qPnCQ2eHl+ydZyPmI9UCBwjmL/K6FjUIDfYt+6Nwj2PnqjzA6OJ9fSCUTXH3LT9lCDNZvvT5pieXvwUxxO/N5B3yUd7QdCJ7oRTIJHggSlBnf780lwG/wCRHyUslG/6I/ipisKBSxH/ABNHSHH+a0f01I7Xc7zC6psTbmB2gJw1YNqRJpP7NQf7TqOYkLzYY3H5fUImvIIIMEGQbyDxB3FWRmytwR6dxGBezUW4hQhUIXJej34pY/DQ17xiKY/LVkujlUF/E5lvdl/ils3EQMQx+Hed5GZk/wB7d3eArFJMrcWjQjE8UsVQU5hcNQrtz4bEU6jf6XB3ySKuy6rfyz3JtxRD6DHagFQcT0ew9TVnkSPkpDg5uoI7wlMrJWkFMzVb8PqWbPSq1qTv6Xx8tVb7P2O+k1zaj31Q/wCI5spBY05IAt8RBOgsLGAFZtqlOMr2uqp4YS5LI5JIzD34inTfTax1zItmLAYBOa4y99wOOpyvSbZlNzMlZtQYkEZmtNPqWjUDsxciJm4PkunPrNIIcJGirKuy6GnVtHdKzvpWpXH/ACXRzqqkcY2Zsao5vVuDhBkQ2bnUki50V9gtkva3K57g0GYJygkaEBwgancujYbCMZ8LAFMa4EQQPJXy6dPllSzNcIw2D2XUdBpPJe0E5i46aWEAHdorR21BSAY++XUFsuJtuWmGGpu1ptPgEn/+S0/DSaPBIukjd2R521RiXYwOdnbTvybEDhKbxuEdXjOXBsg5RvI0krenYbQJeWtHOAqTaXSrZeFkOqio8flp9szwMWHinj0kI7geaUiDgtkPNmMgd0boVsdm0cOzrcVVaxo1zEAd3NYbbf4t1nAtwlFtJv63w5/gBYHzWB2jtGtXfnr1X1HcXGY7ho3whWelC02dI6Rfik1oNLZ7OXXPH/gzU95juK5njcXUqvNSq9z3nVzjJ/YcgmUErk2OopBQhlSk5Tb71QDQ5RanwElrU4Pe/wCqRsKQAgiHuyNQIlwA0lp7rISTr2u6ySx8aH5/UpU8h77kAhZh/V46eaVPADwv6Ii48/n80mZ/wB8ioQW08wOVx80mo3iD5T9Uk959SkAkHX6fNFIjYgATv+SVHsn7Jx8ngffJNk/0u8FAoS73b/KHV8h8kZI4nyScp9n6FQAThHHzRSPYRxxEeH2R9YOPqfqEQB0XuY7MxxY79TSWu8DMrS7L/EHaVCA3EueB+WoBUHiT2vVZkOnh5fUIBvufuEVJomlM6XgvxoxItXw1GpxLS5nocyuKH4w4J3+rhKrebcjh8wfRcdyeHvkUDTPFN3WI8R3Oj+JGyHavqM76b/oCFMZ0y2SdMU0d+YfMLz65nFJypu58C9s9EHpXsr/3lP8A7k2/pdsoD/1bD3H7Beei3vRI9z4Bo+TvdXp7shv/ADXO/tZUPyCr8T+K2zmfBRrP/wBoH/kQuJQUoe7qdxk0I6tjPxl3UcIBze/6NB+az20fxT2jUkNfTpD+ht/N0/JYrLyPzQjmg8jG0ImbQ2viK/8ArVqlTk55I/7ZgeSgjx9+KOPfspQZ79hI2FILz8iiKcyckn3u+6FjUED3I/L1QJ9yjae734IgDY1PsZ3eiQ0BOtPf5n7oBFtcfZS8x9/5TYPM+aHn78EobFygkA9/vwQUIJhFFpQQUIHTbIlJBko0ESewNEYcUEFCBF19yMsHBEggyIZd71SsvMokEWRBObF5+X2SBUKNBFAezALpwUxzQQQY0RPvUoz3oIKADajFMFBBBjLcKIQcwI0ECUNhsoqjBwQQTeQVsF1QRAo0EUK9gz3oQggoEIhEBzKNBQAsM5nzT7KfMokErYyQrL7gfZILu7yRoIoViQ/l8040T7CCCjJHcDhCCCCiIz//2Q=="
         alt="Trucha del Lago Titicaca preparada — alta calidad gastronómica"
         loading="lazy"
       />
       <div>
         <div class="nutri-visual">
           <div class="nutri-title">Composición por 100 g de trucha arcoíris</div>
+          <div class="nutri-hint">
+            <svg viewBox="0 0 24 24"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+            Presiona cada nutriente para ver sus beneficios
+          </div>
           <div class="nutri-bars">
-            <div class="nutri-bar-row">
-              <div class="nutri-bar-label"><span>Proteína</span><span>20.5 g</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width:82%;background:#378ADD;"></div></div>
+
+            <div class="nutri-bar-row" onclick="toggleNutri(this)" style="--panel-color:#378ADD">
+              <div class="nutri-bar-label">
+                <span style="color:#378ADD">Proteína</span>
+                <span>20.5 g</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#378ADD;" data-width="82"></div></div>
+              <div class="nutri-info-panel">
+                <div class="nutri-info-inner">
+                  <h5>¿Para qué sirve la Proteína?</h5>
+                  <ul>
+                    <li>Construye y repara músculo — ideal para dietas deportivas</li>
+                    <li>Mantiene la saciedad por más horas, reduciendo el apetito</li>
+                    <li>Refuerza el sistema inmune y la producción de enzimas</li>
+                    <li>Proteína completa con todos los aminoácidos esenciales</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div class="nutri-bar-row">
-              <div class="nutri-bar-label"><span>Omega-3 (DHA+EPA)</span><span>2.3 g</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width:70%;background:#5DCAA5;"></div></div>
+
+            <div class="nutri-bar-row" onclick="toggleNutri(this)" style="--panel-color:#5DCAA5">
+              <div class="nutri-bar-label">
+                <span style="color:#5DCAA5">Omega-3 (DHA+EPA)</span>
+                <span>2.3 g</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#5DCAA5;" data-width="70"></div></div>
+              <div class="nutri-info-panel">
+                <div class="nutri-info-inner" style="--panel-color:#5DCAA5; border-color:#5DCAA5">
+                  <h5>¿Para qué sirve el Omega-3?</h5>
+                  <ul>
+                    <li>Reduce el colesterol malo (LDL) y protege el corazón</li>
+                    <li>Mejora la memoria, concentración y salud cerebral</li>
+                    <li>Efecto antiinflamatorio natural para articulaciones</li>
+                    <li>Favorece la salud ocular y el desarrollo neuronal</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div class="nutri-bar-row">
-              <div class="nutri-bar-label"><span>Grasa total</span><span>5.4 g</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width:40%;background:#EF9F27;"></div></div>
+
+            <div class="nutri-bar-row" onclick="toggleNutri(this)" style="--panel-color:#EF9F27">
+              <div class="nutri-bar-label">
+                <span style="color:#EF9F27">Grasa total</span>
+                <span>5.4 g</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#EF9F27;" data-width="40"></div></div>
+              <div class="nutri-info-panel">
+                <div class="nutri-info-inner" style="border-color:#EF9F27">
+                  <h5>¿Para qué sirve la Grasa saludable?</h5>
+                  <ul>
+                    <li>Grasa mayormente insaturada — beneficiosa para el corazón</li>
+                    <li>Facilita la absorción de vitaminas A, D, E y K</li>
+                    <li>Fuente de energía sostenida a lo largo del día</li>
+                    <li>Bajo contenido en grasa saturada comparado con carnes rojas</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div class="nutri-bar-row">
-              <div class="nutri-bar-label"><span>Colesterol</span><span>62 mg</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width:30%;background:#F0997B;"></div></div>
+
+            <div class="nutri-bar-row" onclick="toggleNutri(this)" style="--panel-color:#F0997B">
+              <div class="nutri-bar-label">
+                <span style="color:#F0997B">Colesterol</span>
+                <span>62 mg</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#F0997B;" data-width="30"></div></div>
+              <div class="nutri-info-panel">
+                <div class="nutri-info-inner" style="border-color:#F0997B">
+                  <h5>Colesterol en la trucha</h5>
+                  <ul>
+                    <li>Nivel bajo comparado con otras proteínas animales</li>
+                    <li>El alto contenido de Omega-3 contrarresta sus efectos negativos</li>
+                    <li>Apta para dietas cardiosaludables con consumo moderado</li>
+                    <li>Menos colesterol que pollo, res o cerdo por porción</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div class="nutri-bar-row">
-              <div class="nutri-bar-label"><span>Sodio</span><span>52 mg</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width:20%;background:#B5D4F4;"></div></div>
+
+            <div class="nutri-bar-row" onclick="toggleNutri(this)" style="--panel-color:#B5D4F4">
+              <div class="nutri-bar-label">
+                <span style="color:#B5D4F4">Sodio</span>
+                <span>52 mg</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#B5D4F4;" data-width="20"></div></div>
+              <div class="nutri-info-panel">
+                <div class="nutri-info-inner" style="border-color:#B5D4F4">
+                  <h5>Bajo en Sodio — ¿por qué importa?</h5>
+                  <ul>
+                    <li>Ideal para dietas con restricción de sal (hipertensión)</li>
+                    <li>No genera retención de líquidos innecesaria</li>
+                    <li>Perfecta para menús saludables y control de peso</li>
+                    <li>Muy por debajo del límite diario recomendado por la OMS</li>
+                  </ul>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
         <div class="nutri-facts">
@@ -993,31 +1293,31 @@
     <div class="section-title">Tu pedido viaja en frío de principio a fin</div>
     <div class="section-sub">Camiones frigoríficos con monitoreo GPS y sensor de temperatura en tiempo real. Entregas trazadas y documentadas en cada etapa.</div>
     <div class="cold-steps">
-      <div class="cold-step">
+      <div class="cold-step reveal delay-1">
         <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.09-.34.13-.52.13-.18 0-.36-.04-.53-.13l-7.9-4.44A1 1 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44C11.64 2.04 11.82 2 12 2s.36.04.53.13l7.9 4.44c.32.17.52.5.52.88v9z"/></svg></div>
         <h4>Cosecha</h4>
         <p>Selección y sacrificio humanitario en el lago</p>
         <span class="temp-badge">0 °C</span>
       </div>
-      <div class="cold-step">
+      <div class="cold-step reveal delay-2">
         <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg></div>
         <h4>Procesamiento</h4>
         <p>Limpieza, fileteo y empaque en planta</p>
         <span class="temp-badge">2 °C</span>
       </div>
-      <div class="cold-step">
+      <div class="cold-step reveal delay-3">
         <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
         <h4>Empaque</h4>
         <p>Sellado al vacío con etiqueta de trazabilidad</p>
         <span class="temp-badge">2 °C</span>
       </div>
-      <div class="cold-step">
+      <div class="cold-step reveal delay-4">
         <div class="cold-step-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
         <h4>Transporte</h4>
         <p>Camión frigorífico GPS, sensor de temperatura</p>
         <span class="temp-badge">−2 °C</span>
       </div>
-      <div class="cold-step">
+      <div class="cold-step reveal delay-5">
         <div class="cold-step-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
         <h4>Entrega</h4>
         <p>En tu local con remisión firmada y sellada</p>
@@ -1025,17 +1325,21 @@
       </div>
     </div>
 
-    <div class="cold-truck-wrap">
+    <div class="cold-video-wrap reveal">
       <img
-        class="cold-truck-img"
-        src="camion-frigorifico.jpg"
-        alt="Camión frigorífico Volvo — flota propia TiticacaTrout"
-        loading="lazy"
+        src="https://img.magnific.com/foto-gratis/camion-carga-blanco-carretera_23-2151751330.jpg"
+        alt="Camión frigorífico en carretera — TiticacaTrout logística"
+        style="height:300px;width:100%;object-fit:cover;display:block;"
       />
-      <div class="cold-truck-overlay">
+      <div class="cold-video-overlay" style="pointer-events:none;">
         <div class="cold-truck-label">
           <h4>Flota frigorífica propia</h4>
           <p>Monitoreo de temperatura 24/7 · GPS en tiempo real · Remisión digital</p>
+          <div class="cold-badge-row">
+            <span class="cold-badge"><span></span>GPS en vivo</span>
+            <span class="cold-badge"><span></span>−2 °C garantizado</span>
+            <span class="cold-badge"><span></span>Remisión digital</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1106,23 +1410,42 @@
      Para reemplazar: editar .social-strip en CSS → background-image: url('img/social.jpg')
 ════════════════════════════════════ -->
 <section class="social-section">
-  <div class="social-strip">
-    <div>
-      <h3>Síguenos y escríbenos</h3>
-      <p>Respondemos en menos de 2 horas en horario hábil</p>
+  <div class="social-inner">
+    <div class="social-header reveal">
+      <div class="section-tag">Síguenos</div>
+      <h2>Conecta con TiticacaTrout</h2>
+      <p>Respondemos en menos de 2 horas en horario hábil · Contenido fresco del lago cada semana</p>
     </div>
-    <div class="social-btns">
-      <a class="social-btn fb-btn" href="https://www.facebook.com/share/1BCquWXYWh/" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        Facebook
+    <div class="social-cards">
+      <a class="social-card sc-fb reveal delay-1" href="https://www.facebook.com/share/1BCquWXYWh/" target="_blank" rel="noopener">
+        <div class="social-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="social-card-body">
+          <div class="social-card-name">Facebook</div>
+          <div class="social-card-desc">Novedades, fotos del lago y promociones para negocios</div>
+          <div class="social-card-cta">Seguir página <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
       </a>
-      <a class="social-btn tt-btn" href="https://www.tiktok.com/@titicacatruop?_r=1&_t=ZS-97C55NbGHsC" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-        TikTok
+      <a class="social-card sc-tt reveal delay-2" href="https://www.tiktok.com/@titicacatruop?_r=1&_t=ZS-97C55NbGHsC" target="_blank" rel="noopener">
+        <div class="social-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+        </div>
+        <div class="social-card-body">
+          <div class="social-card-name">TikTok</div>
+          <div class="social-card-desc">Videos del proceso, el lago y la trucha en tiempo real</div>
+          <div class="social-card-cta">Ver videos <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
       </a>
-      <a class="social-btn wa-btn" href="https://wa.me/59177738964" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        WhatsApp · 777-38964
+      <a class="social-card sc-wa reveal delay-3" href="https://wa.me/59177738964" target="_blank" rel="noopener">
+        <div class="social-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </div>
+        <div class="social-card-body">
+          <div class="social-card-name">WhatsApp</div>
+          <div class="social-card-desc">+591 777-38964 · Pedidos y consultas directas</div>
+          <div class="social-card-cta">Escribir ahora <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
       </a>
     </div>
   </div>
@@ -1707,6 +2030,76 @@
           <span class="mini-bar-val">${p.pct}%</span>
         </div>`).join('');
   }
+  /* ── Nutrición interactiva ── */
+  function toggleNutri(row) {
+    const isActive = row.classList.contains('active');
+    // Cierra todos
+    document.querySelectorAll('.nutri-bar-row.active').forEach(r => r.classList.remove('active'));
+    // Abre el actual si no estaba activo
+    if (!isActive) row.classList.add('active');
+  }
+
+  // Anima las barras al entrar en viewport
+  (function() {
+    const bars = document.querySelectorAll('.bar-fill[data-width]');
+    if (!bars.length) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          setTimeout(() => { el.style.width = el.dataset.width + '%'; }, 200);
+          obs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.3 });
+    bars.forEach(b => obs.observe(b));
+  })();
+
+  /* ── Banner camión — animación al entrar al viewport ── */
+  (function() {
+    const wrap = document.querySelector('.cold-video-wrap');
+    if (!wrap) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          wrap.classList.add('banner-visible');
+          obs.unobserve(wrap);
+        }
+      });
+    }, { threshold: 0.35 });
+    obs.observe(wrap);
+  })();
+
+  /* ── Imagen trucha — animación al entrar al viewport ── */
+  (function() {
+    const img = document.querySelector('.nutri-img');
+    if (!img) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          img.classList.add('img-visible');
+          obs.unobserve(img);
+        }
+      });
+    }, { threshold: 0.25 });
+    obs.observe(img);
+  })();
+
+  /* ── Scroll Reveal ── */
+  (function() {
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    if (!revealEls.length) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => obs.observe(el));
+  })();
+
   /* ════════════════════════════════════
      REGISTRO DE INTERACCIONES — CONSOLA
      Abre F12 → Console para ver eventos
